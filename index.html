@@ -3,180 +3,1717 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Les 5 V du Big Data — Master 1</title>
+<title>Big Data — Master 1 Data Analyste</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; background: #f8f7f4; padding: 24px 16px; max-width: 720px; margin: 0 auto; }
-  h1 { font-size: 20px; font-weight: 500; color: #2c2c2a; margin-bottom: 4px; }
-  .subtitle { font-size: 13px; color: #888780; margin-bottom: 16px; }
-  .card { cursor: pointer; transition: opacity .15s; margin: 0 0 4px; padding: 14px 18px; border-radius: 12px; display: flex; align-items: center; gap: 16px; }
-  .card:hover { opacity: .88; }
-  .detail-box { display: none; padding: 14px 16px; margin: 0 0 6px; border-radius: 10px; font-size: 13px; line-height: 1.6; }
-  .detail-box.open { display: block; }
-  .tag { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 500; margin-right: 4px; margin-bottom: 4px; }
-  .hint { font-size: 11px; color: #888780; text-align: center; margin: 0 0 8px; }
-  .pipeline { margin: 14px 0 4px; padding: 12px 16px; border-radius: 10px; background: #f1efe8; border: 1px solid rgba(0,0,0,0.08); }
-  .pipeline-title { font-size: 12px; font-weight: 500; color: #2c2c2a; margin-bottom: 6px; }
-  .pipeline-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-  .pipeline-step { padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 500; }
-  .arrow { color: #b4b2a9; font-size: 12px; }
+:root {
+  --bg: #0b0e17;
+  --bg2: #111520;
+  --bg3: #171c2e;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #e8eaf2;
+  --muted: #7a7f9a;
+  --accent: #4f7fff;
+  --accent2: #7c3aff;
+  --purple: #7c3aff;
+  --teal: #10c9a0;
+  --coral: #ff5f57;
+  --amber: #f5a623;
+  --pink: #e040a0;
+  --green: #39d353;
+  --radius: 12px;
+  --radius-lg: 18px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ───── HEADER ───── */
+.app-header {
+  padding: 32px 40px 0;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(79,127,255,0.12);
+  border: 1px solid rgba(79,127,255,0.3);
+  color: var(--accent);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  margin-bottom: 14px;
+  letter-spacing: .06em;
+}
+.dot-pulse {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+h1.app-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #e8eaf2 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.app-subtitle {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: .02em;
+}
+
+/* ───── TABS ───── */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  padding: 24px 40px 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+.tab-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px 14px;
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  transition: color .2s;
+  letter-spacing: .01em;
+}
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform .2s;
+  border-radius: 2px 2px 0 0;
+}
+.tab-btn.active { color: var(--text); }
+.tab-btn.active::after { transform: scaleX(1); }
+.tab-btn:hover { color: var(--text); }
+
+/* ───── SECTIONS ───── */
+.tab-section { display: none; padding: 32px 40px 60px; max-width: 1100px; margin: 0 auto; }
+.tab-section.active { display: block; }
+
+/* ═══════════════════════════════════
+   SECTION 1 — HISTORIQUE
+══════════════════════════════════ */
+.timeline {
+  position: relative;
+  padding-left: 28px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 9px; top: 8px; bottom: 8px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), var(--purple), var(--teal));
+  opacity: .4;
+}
+.tl-item {
+  position: relative;
+  margin-bottom: 32px;
+  padding: 20px 24px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color .2s, transform .2s;
+}
+.tl-item:hover { border-color: var(--border2); transform: translateX(4px); }
+.tl-dot {
+  position: absolute;
+  left: -26px; top: 24px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+}
+.tl-year {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  margin-bottom: 4px;
+}
+.tl-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.tl-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.tl-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tl-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: .04em;
+}
+
+/* ═══════════════════════════════════
+   SECTION 2 — LES 5V
+══════════════════════════════════ */
+.v-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width: 700px) { .v-grid { grid-template-columns: 1fr; } }
+
+.v-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg2);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color .2s, transform .15s;
+  grid-column: span 1;
+}
+.v-card:first-child { grid-column: span 2; }
+@media(max-width: 700px) { .v-card:first-child { grid-column: span 1; } }
+.v-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.v-card.open { border-color: var(--border2); }
+
+.v-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+}
+.v-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  min-width: 48px;
+}
+.v-labels { flex: 1; }
+.v-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.v-sub { font-size: 12px; color: var(--muted); }
+.v-arrow { font-size: 16px; color: var(--muted); transition: transform .2s; }
+.v-card.open .v-arrow { transform: rotate(180deg); }
+
+.v-body {
+  display: none;
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border);
+}
+.v-card.open .v-body { display: block; }
+
+.v-section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin: 14px 0 6px;
+}
+.v-examples {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+  background: var(--bg3);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+.v-enjeu {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--bg3);
+}
+.v-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.v-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: .03em;
+}
+
+/* pipeline */
+.pipeline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+  padding: 16px 20px;
+  background: var(--bg3);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.pipe-label {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: .05em;
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 8px;
+  width: 100%;
+}
+.pipe-step {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.pipe-arr { color: var(--muted); font-size: 14px; }
+
+/* ═══════════════════════════════════
+   SECTION 3 — BATCH VS STREAM
+══════════════════════════════════ */
+.bs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+@media(max-width: 700px) { .bs-grid { grid-template-columns: 1fr; } }
+
+.anim-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.anim-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.anim-subtitle { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+
+.batch-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 90px;
+  margin-bottom: 12px;
+}
+.bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+.bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: height .3s ease;
+  min-height: 2px;
+}
+.bar-lbl { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
+
+.batch-status {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--bg3);
+  color: var(--muted);
+  text-align: center;
+}
+
+/* stream canvas */
+.stream-canvas {
+  height: 90px;
+  background: var(--bg3);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.stream-event {
+  position: absolute;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: stream-flow 2.5s linear;
+  opacity: 0;
+}
+@keyframes stream-flow {
+  0%   { left: -10px; opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { left: calc(100% + 10px); opacity: 0; }
+}
+.stream-line {
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--border2) 0, var(--border2) 6px, transparent 6px, transparent 14px);
+}
+.stream-label {
+  position: absolute;
+  right: 8px; top: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--teal);
+}
+.stream-status {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--bg3);
+  color: var(--teal);
+  text-align: center;
+}
+
+/* decision table */
+.dt-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.dt-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .02em;
+}
+table.dt { width: 100%; border-collapse: collapse; }
+table.dt th {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 10px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+}
+table.dt td {
+  font-size: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+table.dt tr:last-child td { border-bottom: none; }
+table.dt tr:hover td { background: rgba(255,255,255,.02); }
+
+/* arch cards */
+.arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width: 700px) { .arch-grid { grid-template-columns: 1fr; } }
+.arch-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+.arch-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.arch-desc { font-size: 12px; color: var(--muted); line-height: 1.7; margin-bottom: 10px; }
+.arch-pros, .arch-cons { font-size: 12px; line-height: 1.6; }
+.arch-pros::before { content: '✓ '; color: var(--teal); }
+.arch-cons::before { content: '✗ '; color: var(--coral); }
+
+/* ───── MISC ───── */
+.section-intro {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 24px;
+  max-width: 640px;
+  line-height: 1.7;
+}
 </style>
 </head>
 <body>
 
-<h1>Les 5 V du Big Data</h1>
-<p class="subtitle">Master 1 — Cliquer sur chaque V pour voir les détails</p>
-<p class="hint">Cliquer sur chaque V pour voir les détails</p>
+<header class="app-header">
+  <div class="header-badge"><span class="dot-pulse"></span>Master 1 — Data Analyste</div>
+  <h1 class="app-title">Big Data — Concepts & Panorama</h1>
+  <p class="app-subtitle">Formatrice :Ndeye Fatou Mbengue· email:ndeyefatoumbengue20@gmail.com · Data Analyst ·</p>
+  <p class="app-subtitle"> Jour 1 · Fondamentaux · Technologies · Architecture</p>
+</header>
 
-<!-- V1 VOLUME -->
-<div class="card" onclick="toggle('v1')" style="background:#EEEDFE; border:1.5px solid #7F77DD;">
-  <div style="min-width:56px; text-align:center;">
-    <div style="font-size:28px; font-weight:500; color:#3C3489; line-height:1;">V1</div>
-    <div style="font-size:10px; color:#534AB7; letter-spacing:.04em;">VOLUME</div>
+<nav class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('histoire')">📅 Historique</button>
+  <button class="tab-btn" onclick="switchTab('cinqv')">🔵 Les 5V</button>
+  <button class="tab-btn" onclick="switchTab('batch')">⚡ Batch vs Stream</button>
+  <button class="tab-btn" onclick="switchTab('cap')">🔺 CAP & NoSQL</button>
+  <button class="tab-btn" onclick="switchTab('familles')">🗂️ Familles NoSQL</button>
+  <button class="tab-btn" onclick="switchTab('formats')">📦 Types & Formats</button>
+</nav>
+
+<!-- ════════════════════════════════════
+  SECTION 1 : HISTORIQUE
+════════════════════════════════════ -->
+<section id="tab-histoire" class="tab-section active">
+  <p class="section-intro">De l'émergence des premiers systèmes distribués à l'ère du Lakehouse et de l'IA générative — 35 ans qui ont redéfini le traitement de la donnée.</p>
+
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#4f7fff"></div>
+      <div class="tl-year" style="color:#4f7fff">1990 – 1999</div>
+      <div class="tl-title">L'ère relationnelle et ses limites</div>
+      <div class="tl-desc">Les SGBD relationnels (Oracle, DB2, SQL Server) dominent. Tout tient sur un seul serveur. Le terme "Data Warehouse" émerge avec Inmon (1992). Les volumes explosent avec le Web commercial mais les architectures ne suivent pas. Les DBA parlent de "crises de scalabilité" : la verticalisation (ajouter de la RAM, du CPU) a ses limites physiques et économiques.</div>
+      <div class="tl-tags">
+        <span class="tl-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">SQL</span>
+        <span class="tl-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">OLAP</span>
+        <span class="tl-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Data Warehouse</span>
+        <span class="tl-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Scalabilité verticale</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#7c3aff"></div>
+      <div class="tl-year" style="color:#7c3aff">2003 – 2006</div>
+      <div class="tl-title">Les papers fondateurs de Google</div>
+      <div class="tl-desc">Google publie trois papers qui vont tout changer : <strong>GFS</strong> (Google File System, 2003) — stockage distribué sur machines ordinaires, <strong>MapReduce</strong> (2004) — paradigme de calcul distribué en deux phases (map + reduce), et <strong>BigTable</strong> (2006) — base de données colonnaire distribuée. Ces papers posent les fondations conceptuelles du Big Data tel qu'on le connaît aujourd'hui.</div>
+      <div class="tl-tags">
+        <span class="tl-tag" style="background:rgba(124,58,255,.15);color:#7c3aff">GFS</span>
+        <span class="tl-tag" style="background:rgba(124,58,255,.15);color:#7c3aff">MapReduce</span>
+        <span class="tl-tag" style="background:rgba(124,58,255,.15);color:#7c3aff">BigTable</span>
+        <span class="tl-tag" style="background:rgba(124,58,255,.15);color:#7c3aff">Distribué</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#10c9a0"></div>
+      <div class="tl-year" style="color:#10c9a0">2006 – 2010</div>
+      <div class="tl-title">Naissance de Hadoop — l'open source s'empare du Big Data</div>
+      <div class="tl-desc">Doug Cutting et Mike Cafarella créent <strong>Hadoop</strong> en s'inspirant des papers Google. Yahoo! est le premier à le déployer à grande échelle (10 000 nœuds en 2008). Apache Hadoop devient la référence open source : HDFS pour le stockage, MapReduce pour le calcul. L'écosystème s'enrichit rapidement : Hive (SQL sur Hadoop), Pig, HBase (clone open source de BigTable), ZooKeeper.</div>
+      <div class="tl-tags">
+        <span class="tl-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Apache Hadoop</span>
+        <span class="tl-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">HDFS</span>
+        <span class="tl-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Hive</span>
+        <span class="tl-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">HBase</span>
+        <span class="tl-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Open Source</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#f5a623"></div>
+      <div class="tl-year" style="color:#f5a623">2009 – 2013</div>
+      <div class="tl-title">Explosion NoSQL — "Not Only SQL"</div>
+      <div class="tl-desc">Le modèle relationnel montre ses limites pour certains workloads : MongoDB (documents JSON, 2009), Cassandra (colonnaire distribué, partagé par Facebook), Redis (clé-valeur en mémoire), Neo4j (graphes). Le théorème <strong>CAP</strong> (Brewer, 2000) entre dans le vocabulaire courant : on ne peut garantir simultanément Cohérence, Disponibilité et Tolérance aux partitions. Le terme "Big Data" est popularisé et le Gartner le place dans son Hype Cycle.</div>
+      <div class="tl-tags">
+        <span class="tl-tag" style="background:rgba(245,166,35,.15);color:#f5a623">MongoDB</span>
+        <span class="tl-tag" style="background:rgba(245,166,35,.15);color:#f5a623">Cassandra</span>
+        <span class="tl-tag" style="background:rgba(245,166,35,.15);color:#f5a623">Redis</span>
+        <span class="tl-tag" style="background:rgba(245,166,35,.15);color:#f5a623">CAP Theorem</span>
+        <span class="tl-tag" style="background:rgba(245,166,35,.15);color:#f5a623">Neo4j</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#ff5f57"></div>
+      <div class="tl-year" style="color:#ff5f57">2012 – 2016</div>
+      <div class="tl-title">Spark, Kafka et le temps réel — MapReduce n'est plus suffisant</div>
+      <div class="tl-desc"><strong>Apache Spark</strong> (Matei Zaharia, Berkeley, 2009 → Apache 2013) révolutionne le traitement : calcul en mémoire 100× plus rapide que MapReduce, API Python/Scala/Java, ML intégré (MLlib). <strong>Apache Kafka</strong> (LinkedIn, 2011 → Apache 2012) invente le bus d'événements distribué. L'architecture <strong>Lambda</strong> (Nathan Marz) unifie batch et stream. L'ère du "real-time analytics" commence.</div>
+      <div class="tl-tags">
+        <span class="tl-tag" style="background:rgba(255,95,87,.15);color:#ff5f57">Apache Spark</span>
+        <span class="tl-tag" style="background:rgba(255,95,87,.15);color:#ff5f57">Apache Kafka</span>
+        <span class="tl-tag" style="background:rgba(255,95,87,.15);color:#ff5f57">Lambda Arch.</span>
+        <span class="tl-tag" style="background:rgba(255,95,87,.15);color:#ff5f57">Streaming</span>
+        <span class="tl-tag" style="background:rgba(255,95,87,.15);color:#ff5f57">MLlib</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#4f7fff"></div>
+      <div class="tl-year" style="color:#4f7fff">2015 – 2019</div>
+      <div class="tl-title">Cloud & Data Lake — la démocratisation</div>
+      <div class="tl-desc">AWS S3, Google Cloud Storage et Azure Blob Storage deviennent les nouveaux HDFS. Le concept de <strong>Data Lake</strong> (stockage brut, schema-on-read) s'oppose au Data Warehouse (schema-on-write). Databricks popularise Delta Lake. Les services managés (EMR, Dataproc, HDInsight) font du Big Data accessible aux PME. Le coût du stockage s'effondre (1 To sur S3 ≈ 23$/mois). Snowflake lève 480M$ en 2018.</div>
+      <div class="tl-tags">
+        <span class="tl-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">AWS S3</span>
+        <span class="tl-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Data Lake</span>
+        <span class="tl-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Snowflake</span>
+        <span class="tl-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Delta Lake</span>
+        <span class="tl-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Serverless</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#10c9a0"></div>
+      <div class="tl-year" style="color:#10c9a0">2020 – 2022</div>
+      <div class="tl-title">Lakehouse — convergence Data Lake + Data Warehouse</div>
+      <div class="tl-desc">Databricks introduit l'architecture <strong>Lakehouse</strong> : le meilleur des deux mondes — la flexibilité et le coût du Data Lake + les performances ACID et l'optimisation des requêtes du Data Warehouse. Formats ouverts : <strong>Delta Lake</strong> (Databricks), <strong>Apache Iceberg</strong> (Netflix), <strong>Apache Hudi</strong> (Uber). L'architecture <strong>Médaillon</strong> (Bronze/Silver/Gold) structure les pipelines de transformation. dbt s'impose pour la transformation SQL.</div>
+      <div class="tl-tags">
+        <span class="tl-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Lakehouse</span>
+        <span class="tl-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Apache Iceberg</span>
+        <span class="tl-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Médaillon</span>
+        <span class="tl-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">dbt</span>
+        <span class="tl-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">ACID</span>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#e040a0"></div>
+      <div class="tl-year" style="color:#e040a0">2023 – 2025</div>
+      <div class="tl-title">IA générative & Data Mesh — la nouvelle frontière</div>
+      <div class="tl-desc">ChatGPT (Nov. 2022) change la perception du Big Data : les LLMs sont entraînés sur des données massives et redistribuent la valeur vers la qualité des données plutôt que le volume brut. Le <strong>Data Mesh</strong> (Zhamak Dehghani) décentralise la gouvernance : chaque domaine métier est owner de ses données. Les <strong>Vector Databases</strong> (Pinecone, Weaviate, pgvector) émergent pour la RAG. La Modern Data Stack se consolide autour de Fivetran/dbt/Snowflake/Looker.</div>
+      <div class="tl-tags">
+        <span class="tl-tag" style="background:rgba(224,64,160,.15);color:#e040a0">LLM / GenAI</span>
+        <span class="tl-tag" style="background:rgba(224,64,160,.15);color:#e040a0">Data Mesh</span>
+        <span class="tl-tag" style="background:rgba(224,64,160,.15);color:#e040a0">Vector DB</span>
+        <span class="tl-tag" style="background:rgba(224,64,160,.15);color:#e040a0">RAG</span>
+        <span class="tl-tag" style="background:rgba(224,64,160,.15);color:#e040a0">MLOps</span>
+      </div>
+    </div>
+
   </div>
-  <div style="flex:1;">
-    <div style="font-weight:500; font-size:14px; color:#26215C;">Quelle quantité de données ?</div>
-    <div style="font-size:12px; color:#534AB7; margin-top:2px;">De Go → To → Po → Eo — l'échelle qui définit le Big Data</div>
+</section>
+
+<!-- ════════════════════════════════════
+  SECTION 2 : LES 5V
+════════════════════════════════════ -->
+<section id="tab-cinqv" class="tab-section">
+  <p class="section-intro">Les 5 dimensions qui définissent le Big Data. Cliquez sur chaque carte pour découvrir exemples réels, enjeux techniques et mots-clés.</p>
+
+  <div class="v-grid">
+
+    <!-- V1 VOLUME -->
+    <div class="v-card" onclick="toggleV(this)">
+      <div class="v-header">
+        <div class="v-num" style="color:#4f7fff">V1</div>
+        <div class="v-labels">
+          <div class="v-name" style="color:#4f7fff">Volume</div>
+          <div class="v-sub">Quelle quantité de données ?</div>
+        </div>
+        <svg width="44" height="30" viewBox="0 0 44 30" style="margin-right:8px"><rect x="0" y="20" width="7" height="10" rx="2" fill="rgba(79,127,255,.3)"/><rect x="11" y="13" width="7" height="17" rx="2" fill="rgba(79,127,255,.5)"/><rect x="22" y="6" width="7" height="24" rx="2" fill="rgba(79,127,255,.75)"/><rect x="33" y="0" width="7" height="30" rx="2" fill="#4f7fff"/></svg>
+        <div class="v-arrow">▾</div>
+      </div>
+      <div class="v-body">
+        <div class="v-section-label" style="color:#4f7fff">Exemples réels</div>
+        <div class="v-examples">Facebook génère ~4 Po de données/jour · Twitter : 500M tweets/jour · LHC CERN (Genève) : 15 Po/an · Walmart analyse 2,5 Po de transactions chaque heure · Google traite 8,5 milliards de requêtes/jour</div>
+        <div class="v-section-label" style="color:#4f7fff">Enjeu M1</div>
+        <div class="v-enjeu">Le stockage distribué (HDFS, S3, GCS) devient incontournable. Un SGBD relationnel classique ne tient pas à cette échelle — on parle de scalabilité <em>horizontale</em> (ajouter des nœuds) plutôt que verticale (améliorer le matériel). La notion de <em>rack awareness</em> dans HDFS garantit la résilience même en cas de panne de datacenter.</div>
+        <div class="v-tags">
+          <span class="v-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">HDFS</span>
+          <span class="v-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Amazon S3</span>
+          <span class="v-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Data Lake</span>
+          <span class="v-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Sharding</span>
+          <span class="v-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Compression (Parquet)</span>
+          <span class="v-tag" style="background:rgba(79,127,255,.15);color:#4f7fff">Réplication</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- V2 VITESSE -->
+    <div class="v-card" onclick="toggleV(this)">
+      <div class="v-header">
+        <div class="v-num" style="color:#10c9a0">V2</div>
+        <div class="v-labels">
+          <div class="v-name" style="color:#10c9a0">Vélocité</div>
+          <div class="v-sub">À quelle vitesse arrivent les données ?</div>
+        </div>
+        <svg width="44" height="30" viewBox="0 0 44 30" style="margin-right:8px"><path d="M4 15 L18 15" stroke="rgba(16,201,160,.4)" stroke-width="2" stroke-linecap="round"/><path d="M4 8 L30 8" stroke="rgba(16,201,160,.65)" stroke-width="2" stroke-linecap="round"/><path d="M4 22 L24 22" stroke="rgba(16,201,160,.85)" stroke-width="2" stroke-linecap="round"/><polygon points="40,15 33,11 33,19" fill="#10c9a0"/><line x1="33" y1="15" x2="18" y2="15" stroke="#10c9a0" stroke-width="2"/></svg>
+        <div class="v-arrow">▾</div>
+      </div>
+      <div class="v-body">
+        <div class="v-section-label" style="color:#10c9a0">Exemples réels</div>
+        <div class="v-examples">Détection de fraude bancaire en &lt;100ms (Visa, 24 000 TPS) · Flux boursiers NYSE : millions d'ordres/seconde · IoT usine Tesla : 10 000+ capteurs en temps réel · Uber : localisation de millions de chauffeurs toutes les 4s</div>
+        <div class="v-section-label" style="color:#10c9a0">Enjeu M1</div>
+        <div class="v-enjeu">Deux paradigmes opposés — <em>batch</em> (traitement différé, haute volumétrie : MapReduce, Spark) vs <em>stream processing</em> (traitement immédiat, faible latence : Kafka Streams, Apache Flink). Le choix impacte la latence, la cohérence des données (sémantiques <em>exactly-once</em>, <em>at-least-once</em>) et le coût infrastructure.</div>
+        <div class="v-tags">
+          <span class="v-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Apache Kafka</span>
+          <span class="v-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Apache Flink</span>
+          <span class="v-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Spark Streaming</span>
+          <span class="v-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Exactly-once</span>
+          <span class="v-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Lambda Arch.</span>
+          <span class="v-tag" style="background:rgba(16,201,160,.15);color:#10c9a0">Kappa Arch.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- V3 VARIÉTÉ -->
+    <div class="v-card" onclick="toggleV(this)">
+      <div class="v-header">
+        <div class="v-num" style="color:#ff5f57">V3</div>
+        <div class="v-labels">
+          <div class="v-name" style="color:#ff5f57">Variété</div>
+          <div class="v-sub">Sous quelle forme arrivent les données ?</div>
+        </div>
+        <svg width="44" height="30" viewBox="0 0 44 30" style="margin-right:8px"><rect x="0" y="8" width="12" height="14" rx="3" fill="rgba(255,95,87,.4)"/><ellipse cx="25" cy="15" rx="8" ry="9" fill="rgba(255,95,87,.65)"/><polygon points="40,5 35,25 45,25" fill="#ff5f57"/></svg>
+        <div class="v-arrow">▾</div>
+      </div>
+      <div class="v-body">
+        <div class="v-section-label" style="color:#ff5f57">Exemples réels</div>
+        <div class="v-examples">Logs serveur Apache (texte brut) · Tweets en JSON semi-structuré · IRM médicale en DICOM (images) · Transactions SQL (structuré) · Emails (texte non structuré) · Vidéos de surveillance (binaire brut)</div>
+        <div class="v-section-label" style="color:#ff5f57">Enjeu M1</div>
+        <div class="v-enjeu">80% des données mondiales sont non-structurées. Le schéma fixe des SGBD relationnels devient un frein. Les bases NoSQL (document, colonnaire, graphe, clé-valeur) et les data lakes avec <em>schema-on-read</em> absorbent cette diversité sans coût de transformation initial. Les formats colonnaires (Parquet, ORC) compressent et accélèrent la lecture analytique.</div>
+        <div class="v-tags">
+          <span class="v-tag" style="background:rgba(255,95,87,.15);color:#ff5f57">NoSQL</span>
+          <span class="v-tag" style="background:rgba(255,95,87,.15);color:#ff5f57">Parquet / ORC</span>
+          <span class="v-tag" style="background:rgba(255,95,87,.15);color:#ff5f57">Schema-on-read</span>
+          <span class="v-tag" style="background:rgba(255,95,87,.15);color:#ff5f57">NLP / Computer Vision</span>
+          <span class="v-tag" style="background:rgba(255,95,87,.15);color:#ff5f57">JSON / Avro</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- V4 VÉRACITÉ -->
+    <div class="v-card" onclick="toggleV(this)">
+      <div class="v-header">
+        <div class="v-num" style="color:#e040a0">V4</div>
+        <div class="v-labels">
+          <div class="v-name" style="color:#e040a0">Véracité</div>
+          <div class="v-sub">Peut-on faire confiance aux données ?</div>
+        </div>
+        <svg width="44" height="30" viewBox="0 0 44 30" style="margin-right:8px"><circle cx="22" cy="15" r="12" fill="rgba(224,64,160,.2)" stroke="rgba(224,64,160,.6)" stroke-width="1.5"/><path d="M14 15 L20 21 L30 9" fill="none" stroke="#e040a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="v-arrow">▾</div>
+      </div>
+      <div class="v-body">
+        <div class="v-section-label" style="color:#e040a0">Exemples réels</div>
+        <div class="v-examples">Capteurs IoT défectueux → valeurs aberrantes · Données clients dupliquées après fusion d'entreprises · Biais racial dans les algorithmes de reconnaissance faciale (MIT étude 2019 : 34% d'erreur sur femmes à peau sombre vs 0.8% sur hommes blancs) · Données manquantes dans les enquêtes santé COVID</div>
+        <div class="v-section-label" style="color:#e040a0">Enjeu M1</div>
+        <div class="v-enjeu">"Garbage in, garbage out" — un modèle ML entraîné sur des données corrompues donne des prédictions erronées. La qualité des données conditionne tout le pipeline aval. Les outils de <em>data quality</em> (Great Expectations, dbt tests) automatisent la validation. La <em>data lineage</em> permet de tracer l'origine de chaque anomalie.</div>
+        <div class="v-tags">
+          <span class="v-tag" style="background:rgba(224,64,160,.15);color:#e040a0">Data Quality</span>
+          <span class="v-tag" style="background:rgba(224,64,160,.15);color:#e040a0">ETL / ELT</span>
+          <span class="v-tag" style="background:rgba(224,64,160,.15);color:#e040a0">Déduplication</span>
+          <span class="v-tag" style="background:rgba(224,64,160,.15);color:#e040a0">Data Lineage</span>
+          <span class="v-tag" style="background:rgba(224,64,160,.15);color:#e040a0">Great Expectations</span>
+          <span class="v-tag" style="background:rgba(224,64,160,.15);color:#e040a0">Biais algorithmique</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- V5 VALEUR -->
+    <div class="v-card" onclick="toggleV(this)" style="grid-column: span 2;">
+      <div class="v-header">
+        <div class="v-num" style="color:#f5a623">V5</div>
+        <div class="v-labels">
+          <div class="v-name" style="color:#f5a623">Valeur</div>
+          <div class="v-sub">Qu'est-ce qu'on en tire concrètement ? — Le V qui justifie les 4 autres</div>
+        </div>
+        <svg width="44" height="30" viewBox="0 0 44 30" style="margin-right:8px"><polygon points="22,2 27,13 39,14 30,22 33,34 22,27 11,34 14,22 5,14 17,13" fill="#f5a623" transform="scale(0.72) translate(3,0)"/></svg>
+        <div class="v-arrow">▾</div>
+      </div>
+      <div class="v-body">
+        <div class="v-section-label" style="color:#f5a623">Exemples réels</div>
+        <div class="v-examples">Netflix : algorithme de recommandation = économie de 1 Md$/an en rétention · Amazon : les recommandations représentent 35% du CA total · Airbus Skywise : maintenance prédictive sur 10 000 avions → réduction de 40% des retards techniques · Météo France : modèles sur 10 Po → alertes sauvant des vies · Spotify Discover Weekly : 30M+ utilisateurs satisfaits chaque lundi</div>
+        <div class="v-section-label" style="color:#f5a623">Enjeu M1</div>
+        <div class="v-enjeu">Sans valeur métier, les 4 autres V sont sans intérêt. La data science, le machine learning et la dataviz sont les outils qui transforment la masse de données en décisions actionnables. Le Data Analyst M1 est celui qui fait le pont entre la complexité technique (pipelines, modèles) et la compréhension métier (KPI, ROI, décisions). On parle de <em>data-driven culture</em> quand les décisions d'entreprise sont systématiquement guidées par la donnée.</div>
+        <div class="v-tags">
+          <span class="v-tag" style="background:rgba(245,166,35,.15);color:#f5a623">Machine Learning</span>
+          <span class="v-tag" style="background:rgba(245,166,35,.15);color:#f5a623">BI / Dataviz</span>
+          <span class="v-tag" style="background:rgba(245,166,35,.15);color:#f5a623">KPI / ROI</span>
+          <span class="v-tag" style="background:rgba(245,166,35,.15);color:#f5a623">Data-driven</span>
+          <span class="v-tag" style="background:rgba(245,166,35,.15);color:#f5a623">A/B Testing</span>
+          <span class="v-tag" style="background:rgba(245,166,35,.15);color:#f5a623">Looker / Tableau</span>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <svg width="48" height="32" viewBox="0 0 48 32">
-    <rect x="2" y="22" width="8" height="8" rx="2" fill="#AFA9EC"/>
-    <rect x="14" y="14" width="8" height="16" rx="2" fill="#7F77DD"/>
-    <rect x="26" y="6" width="8" height="24" rx="2" fill="#534AB7"/>
-    <rect x="38" y="0" width="8" height="30" rx="2" fill="#3C3489"/>
+
+  <!-- Pipeline synthétique -->
+  <div class="pipeline">
+    <div class="pipe-label">PIPELINE BIG DATA — LES 5V EN ACTION</div>
+    <span class="pipe-step" style="background:rgba(79,127,255,.15);color:#4f7fff">Sources massives (V1)</span>
+    <span class="pipe-arr">→</span>
+    <span class="pipe-step" style="background:rgba(16,201,160,.15);color:#10c9a0">Ingestion rapide (V2)</span>
+    <span class="pipe-arr">→</span>
+    <span class="pipe-step" style="background:rgba(255,95,87,.15);color:#ff5f57">Formats divers (V3)</span>
+    <span class="pipe-arr">→</span>
+    <span class="pipe-step" style="background:rgba(224,64,160,.15);color:#e040a0">Nettoyage (V4)</span>
+    <span class="pipe-arr">→</span>
+    <span class="pipe-step" style="background:rgba(245,166,35,.15);color:#f5a623">Valeur métier (V5)</span>
+  </div>
+
+</section>
+
+<!-- ════════════════════════════════════
+  SECTION 3 : BATCH VS STREAM
+════════════════════════════════════ -->
+<section id="tab-batch" class="tab-section">
+  <p class="section-intro">Deux paradigmes fondamentaux pour traiter la donnée. Comprendre leurs différences conditionne le choix d'architecture de tout pipeline de données.</p>
+
+  <!-- Animations côte à côte -->
+  <div class="bs-grid">
+    <!-- BATCH -->
+    <div class="anim-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <span style="width:10px;height:10px;border-radius:50%;background:#4f7fff;display:inline-block;"></span>
+        <div class="anim-title" style="margin:0;">Traitement Batch</div>
+      </div>
+      <div class="anim-subtitle">Accumulation → traitement différé par lots</div>
+
+      <div class="batch-bars" id="batch-bars">
+        <div class="bar-wrap"><div class="bar" id="bar0" style="background:rgba(79,127,255,.5);height:2px;"></div><div class="bar-lbl">T1</div></div>
+        <div class="bar-wrap"><div class="bar" id="bar1" style="background:rgba(79,127,255,.6);height:2px;"></div><div class="bar-lbl">T2</div></div>
+        <div class="bar-wrap"><div class="bar" id="bar2" style="background:rgba(79,127,255,.7);height:2px;"></div><div class="bar-lbl">T3</div></div>
+        <div class="bar-wrap"><div class="bar" id="bar3" style="background:rgba(79,127,255,.8);height:2px;"></div><div class="bar-lbl">T4</div></div>
+        <div class="bar-wrap"><div class="bar" id="bar4" style="background:rgba(79,127,255,.9);height:2px;"></div><div class="bar-lbl">T5</div></div>
+        <div class="bar-wrap"><div class="bar" id="bar5" style="background:#4f7fff;height:2px;"></div><div class="bar-lbl">T6</div></div>
+      </div>
+      <div class="batch-status" id="batch-status">⟳ Accumulation des données...</div>
+    </div>
+
+    <!-- STREAM -->
+    <div class="anim-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <span style="width:10px;height:10px;border-radius:50%;background:#10c9a0;display:inline-block;animation:pulse 1s infinite;"></span>
+        <div class="anim-title" style="margin:0;">Traitement Stream</div>
+      </div>
+      <div class="anim-subtitle">Événement par événement, en temps réel</div>
+
+      <div class="stream-canvas" id="stream-canvas">
+        <div class="stream-line"></div>
+        <div class="stream-label" id="stream-counter">0 evt/s</div>
+      </div>
+      <div class="stream-status" id="stream-status">● LIVE — traitement immédiat</div>
+    </div>
+  </div>
+
+  <!-- Légende -->
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;padding:12px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);font-size:12px;color:var(--muted);">
+    <span><span style="color:#4f7fff;">■</span> Batch : latence élevée (minutes → heures), débit maximal</span>
+    <span><span style="color:#10c9a0;">●</span> Stream : latence faible (&lt;1s), traitement continu</span>
+    <span><span style="color:#f5a623;">◆</span> Micro-batch : compromis (Spark Structured Streaming)</span>
+  </div>
+
+  <!-- Tableau de décision -->
+  <div class="dt-card">
+    <div class="dt-header">Tableau de décision — Quand choisir quoi ?</div>
+    <table class="dt">
+      <tr>
+        <th>Critère</th>
+        <th style="color:#4f7fff">Batch</th>
+        <th style="color:#f5a623">Micro-Batch</th>
+        <th style="color:#10c9a0">Stream</th>
+      </tr>
+      <tr>
+        <td><strong>Latence acceptable</strong></td>
+        <td>Heures / jours</td>
+        <td>Secondes / minutes</td>
+        <td>&lt; 1 seconde</td>
+      </tr>
+      <tr>
+        <td><strong>Exemples d'usage</strong></td>
+        <td>Rapports BI nocturnes, paie mensuelle, entraînement ML</td>
+        <td>Dashboards quasi-temps réel, alertes métier</td>
+        <td>Détection fraude, trading HFT, IoT critique</td>
+      </tr>
+      <tr>
+        <td><strong>Technos clés</strong></td>
+        <td>MapReduce, Spark (batch), Hive, dbt</td>
+        <td>Spark Structured Streaming, Kafka + Spark</td>
+        <td>Kafka Streams, Apache Flink, Storm</td>
+      </tr>
+      <tr>
+        <td><strong>Complexité</strong></td>
+        <td>Faible — logique simple, rejouable</td>
+        <td>Moyenne</td>
+        <td>Élevée — gestion état, backpressure, exactly-once</td>
+      </tr>
+      <tr>
+        <td><strong>Coût</strong></td>
+        <td>Faible (clusters éphémères)</td>
+        <td>Moyen</td>
+        <td>Élevé (clusters permanents)</td>
+      </tr>
+      <tr>
+        <td><strong>Rejouabilité</strong></td>
+        <td>Oui — idempotent par design</td>
+        <td>Partielle</td>
+        <td>Difficile — nécessite replay Kafka</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Architectures Lambda et Kappa -->
+  <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin:24px 0 12px;color:var(--text);">Architectures hybrides</div>
+  <div class="arch-grid">
+    <div class="arch-card" style="border-top:3px solid #4f7fff;">
+      <div class="arch-title" style="color:#4f7fff;">Architecture Lambda</div>
+      <div class="arch-desc">Proposée par Nathan Marz (créateur de Storm). Combine deux couches parallèles : une <strong>batch layer</strong> (Hadoop/Spark) qui recalcule les vues complètes sur l'historique, et une <strong>speed layer</strong> (Kafka/Storm) qui traite les données récentes en temps réel. Une <strong>serving layer</strong> (HBase, Cassandra) fusionne les deux pour les requêtes.</div>
+      <div class="arch-pros" style="margin-bottom:6px;">Tolérance aux pannes — l'historique batch corrige les erreurs stream</div>
+      <div class="arch-pros" style="margin-bottom:6px;">Adapté aux grands volumes historiques + temps réel</div>
+      <div class="arch-cons" style="margin-bottom:6px;">Deux codebase à maintenir (batch + stream)</div>
+      <div class="arch-cons">Complexité opérationnelle élevée</div>
+      <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span class="v-tag" style="background:rgba(79,127,255,.12);color:#4f7fff;font-size:10px;">Hadoop</span>
+        <span class="v-tag" style="background:rgba(79,127,255,.12);color:#4f7fff;font-size:10px;">Apache Storm</span>
+        <span class="v-tag" style="background:rgba(79,127,255,.12);color:#4f7fff;font-size:10px;">HBase</span>
+      </div>
+    </div>
+
+    <div class="arch-card" style="border-top:3px solid #10c9a0;">
+      <div class="arch-title" style="color:#10c9a0;">Architecture Kappa</div>
+      <div class="arch-desc">Proposée par Jay Kreps (co-créateur de Kafka). Simplification radicale : <strong>une seule couche stream</strong> pour tout traiter. Le "batch" devient un stream replay : on rejoue l'historique depuis Kafka pour recalculer les vues. Principe : si le stream processing est assez puissant (Flink, Kafka Streams), pas besoin d'un batch séparé.</div>
+      <div class="arch-pros" style="margin-bottom:6px;">Un seul codebase — maintenance simplifiée</div>
+      <div class="arch-pros" style="margin-bottom:6px;">Cohérence garantie entre historique et temps réel</div>
+      <div class="arch-cons" style="margin-bottom:6px;">Kafka doit stocker toute la rétention nécessaire</div>
+      <div class="arch-cons">Moins adapté aux calculs historiques très complexes</div>
+      <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span class="v-tag" style="background:rgba(16,201,160,.12);color:#10c9a0;font-size:10px;">Apache Kafka</span>
+        <span class="v-tag" style="background:rgba(16,201,160,.12);color:#10c9a0;font-size:10px;">Apache Flink</span>
+        <span class="v-tag" style="background:rgba(16,201,160,.12);color:#10c9a0;font-size:10px;">Kafka Streams</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Note Lakehouse -->
+  <div style="margin-top:16px;padding:16px 20px;background:var(--bg2);border:1px solid rgba(245,166,35,.25);border-radius:var(--radius);font-size:13px;color:var(--muted);line-height:1.7;">
+    <span style="color:#f5a623;font-weight:500;">→ Tendance 2024 :</span> L'architecture <strong style="color:var(--text);">Lakehouse</strong> (Databricks, Apache Iceberg) tend à remplacer Lambda en unifiant batch et stream dans une même couche de stockage ACID, réduisant encore la complexité.
+  </div>
+
+</section>
+
+<!-- ════════════════════════════════════
+  SECTION 4 : CAP & NoSQL
+════════════════════════════════════ -->
+<section id="tab-cap" class="tab-section">
+  <p class="section-intro">Le théorème CAP structure les choix architecturaux de toute base de données distribuée. Cliquez sur chaque sommet et chaque famille NoSQL pour les détails.</p>
+
+  <style>
+    /* Fix variable mapping for embedded content */
+    #tab-cap .hint { font-size:11px; color:var(--muted); text-align:center; margin:0 0 8px; }
+    #tab-cap .card { cursor:pointer; transition: opacity .15s; }
+    #tab-cap .card:hover { opacity:.88; }
+    #tab-cap .detail-box { display:none; padding:14px 16px; margin:0 16px 6px; border-radius:10px; font-size:13px; line-height:1.6; }
+    #tab-cap .detail-box.open { display:block; }
+    #tab-cap .tag { display:inline-block; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:500; margin-right:4px; margin-bottom:4px; }
+    #tab-cap .db-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin:8px 0 4px; }
+    #tab-cap .db-card { padding:12px; border-radius:10px; cursor:pointer; transition:opacity .15s; }
+    #tab-cap .db-card:hover { opacity:.85; }
+    #tab-cap .section-title { font-size:11px; font-weight:500; color:var(--muted); letter-spacing:.05em; margin:14px 0 6px; }
+    #tab-cap svg text { font-family:'DM Sans',sans-serif; }
+    #tab-cap svg .th { font-family:'Syne',sans-serif; font-weight:700; }
+    #tab-cap svg .ts { font-size:11px; }
+  </style>
+
+  <p class="hint">Cliquer sur chaque propriété et chaque base NoSQL pour les détails</p>
+
+  <svg width="100%" viewBox="0 0 680 310" role="img">
+    <title>Théorème CAP</title>
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+    <polygon points="340,28 120,268 560,268" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="1.5"/>
+    <rect x="254" y="130" width="172" height="48" rx="10" fill="#D3D1C7" opacity=".6"/>
+    <text class="th" x="340" y="149" text-anchor="middle" dominant-baseline="central" fill="#2C2C2A" font-size="13">Choisir 2 sur 3</text>
+    <text class="ts" x="340" y="167" text-anchor="middle" dominant-baseline="central" fill="#444441">On ne peut pas tout avoir</text>
+    <g class="card" onclick="toggleCap('c')">
+      <rect x="256" y="6" width="168" height="54" rx="10" fill="#3C3489" stroke="#26215C" stroke-width="1.5"/>
+      <text class="th" x="340" y="26" text-anchor="middle" dominant-baseline="central" fill="#EEEDFE" font-size="15">Consistance</text>
+      <text class="ts" x="340" y="46" text-anchor="middle" dominant-baseline="central" fill="#AFA9EC">Tous les nœuds voient la même donnée</text>
+    </g>
+    <g class="card" onclick="toggleCap('a')">
+      <rect x="50" y="248" width="168" height="54" rx="10" fill="#085041" stroke="#04342C" stroke-width="1.5"/>
+      <text class="th" x="134" y="268" text-anchor="middle" dominant-baseline="central" fill="#E1F5EE" font-size="15">Disponibilité</text>
+      <text class="ts" x="134" y="288" text-anchor="middle" dominant-baseline="central" fill="#9FE1CB">Toujours une réponse</text>
+    </g>
+    <g class="card" onclick="toggleCap('p')">
+      <rect x="462" y="248" width="168" height="54" rx="10" fill="#712B13" stroke="#4A1B0C" stroke-width="1.5"/>
+      <text class="th" x="546" y="264" text-anchor="middle" dominant-baseline="central" fill="#FAECE7" font-size="13">Tolérance partition</text>
+      <text class="ts" x="546" y="284" text-anchor="middle" dominant-baseline="central" fill="#F5C4B3">Résiste aux coupures réseau</text>
+    </g>
+    <text class="ts" x="195" y="155" text-anchor="middle" fill="#534AB7" font-weight="500">CP</text>
+    <text class="ts" x="195" y="170" text-anchor="middle" fill="#534AB7">MongoDB</text>
+    <text class="ts" x="195" y="183" text-anchor="middle" fill="#534AB7">HBase</text>
+    <text class="ts" x="487" y="155" text-anchor="middle" fill="#993C1D" font-weight="500">AP</text>
+    <text class="ts" x="487" y="170" text-anchor="middle" fill="#993C1D">Cassandra</text>
+    <text class="ts" x="487" y="183" text-anchor="middle" fill="#993C1D">CouchDB</text>
+    <text class="ts" x="340" y="250" text-anchor="middle" fill="#2C2C2A" font-weight="500">CA</text>
+    <text class="ts" x="340" y="264" text-anchor="middle" fill="#5F5E5A">MySQL, PostgreSQL</text>
+    <text class="ts" x="340" y="278" text-anchor="middle" fill="#5F5E5A">(réseau fiable requis)</text>
   </svg>
-</div>
-<div id="v1-detail" class="detail-box" style="background:#F5F4FE; border:1px solid #AFA9EC; color:#26215C;">
-  <strong style="color:#3C3489;">Exemples concrets :</strong><br>
-  Facebook génère ~4 Po de données/jour · Twitter : 500M tweets/jour · LHC CERN : 15 Po/an<br><br>
-  <strong style="color:#3C3489;">Enjeu M1 :</strong> Le stockage distribué (HDFS, S3, GCS) devient incontournable. Un SGBD relationnel classique ne tient pas à cette échelle.<br><br>
-  <span class="tag" style="background:#CECBF6; color:#26215C;">HDFS</span>
-  <span class="tag" style="background:#CECBF6; color:#26215C;">Data Lake</span>
-  <span class="tag" style="background:#CECBF6; color:#26215C;">Sharding</span>
-  <span class="tag" style="background:#CECBF6; color:#26215C;">Compression</span>
-</div>
 
-<!-- V2 VITESSE -->
-<div class="card" onclick="toggle('v2')" style="background:#E1F5EE; border:1.5px solid #1D9E75;">
-  <div style="min-width:56px; text-align:center;">
-    <div style="font-size:28px; font-weight:500; color:#085041; line-height:1;">V2</div>
-    <div style="font-size:10px; color:#0F6E56; letter-spacing:.04em;">VITESSE</div>
+  <div id="cap-c" class="detail-box" style="background:#EEEDFE; border:1px solid #7F77DD; color:#26215C;">
+    <strong style="color:#3C3489;">Consistance (C) — Cohérence forte</strong><br>
+    Après une écriture, toute lecture renvoie la valeur la plus récente. Tous les nœuds du cluster sont synchronisés avant de répondre.<br><br>
+    <strong style="color:#3C3489;">Exemple :</strong> Un virement bancaire — si je transfère 500€, mon solde doit être immédiatement correct sur tous les serveurs.<br><br>
+    <strong style="color:#3C3489;">Coût :</strong> Nécessite des verrous distribués (2PC, Paxos, Raft) → latence plus élevée.
+    <br><br>
+    <span class="tag" style="background:#CECBF6; color:#26215C;">ACID</span>
+    <span class="tag" style="background:#CECBF6; color:#26215C;">Paxos</span>
+    <span class="tag" style="background:#CECBF6; color:#26215C;">Raft</span>
+    <span class="tag" style="background:#CECBF6; color:#26215C;">2PC</span>
   </div>
-  <div style="flex:1;">
-    <div style="font-weight:500; font-size:14px; color:#04342C;">À quelle vitesse arrivent les données ?</div>
-    <div style="font-size:12px; color:#0F6E56; margin-top:2px;">Batch (heures) → micro-batch (minutes) → streaming (millisecondes)</div>
-  </div>
-  <svg width="48" height="32" viewBox="0 0 48 32">
-    <path d="M4 22 L24 22" stroke="#9FE1CB" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M4 16 L32 16" stroke="#5DCAA5" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M4 10 L38 10" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round"/>
-    <polygon points="44,16 36,12 36,20" fill="#085041"/>
-  </svg>
-</div>
-<div id="v2-detail" class="detail-box" style="background:#F0FAF5; border:1px solid #5DCAA5; color:#04342C;">
-  <strong style="color:#085041;">Exemples concrets :</strong><br>
-  Détection de fraude bancaire en &lt;100ms · Flux boursiers en temps réel · IoT capteurs industriels 10k événements/s<br><br>
-  <strong style="color:#085041;">Enjeu M1 :</strong> Deux paradigmes opposés — <em>batch</em> (MapReduce, Spark) vs <em>stream processing</em> (Kafka, Flink). Le choix impacte la latence, la cohérence et le coût.<br><br>
-  <span class="tag" style="background:#9FE1CB; color:#04342C;">Apache Kafka</span>
-  <span class="tag" style="background:#9FE1CB; color:#04342C;">Apache Flink</span>
-  <span class="tag" style="background:#9FE1CB; color:#04342C;">Spark Streaming</span>
-  <span class="tag" style="background:#9FE1CB; color:#04342C;">Lambda arch.</span>
-</div>
 
-<!-- V3 VARIÉTÉ -->
-<div class="card" onclick="toggle('v3')" style="background:#FAECE7; border:1.5px solid #D85A30;">
-  <div style="min-width:56px; text-align:center;">
-    <div style="font-size:28px; font-weight:500; color:#712B13; line-height:1;">V3</div>
-    <div style="font-size:10px; color:#993C1D; letter-spacing:.04em;">VARIÉTÉ</div>
+  <div id="cap-a" class="detail-box" style="background:#E1F5EE; border:1px solid #1D9E75; color:#04342C;">
+    <strong style="color:#085041;">Disponibilité (A) — Haute disponibilité</strong><br>
+    Le système répond toujours à chaque requête — même si la donnée n'est pas la plus récente. Aucun nœud sain ne refuse une requête.<br><br>
+    <strong style="color:#085041;">Exemple :</strong> Netflix continue d'afficher vos recommandations même si un datacenter est en panne. La liste peut être légèrement obsolète, mais vous ne voyez pas d'erreur.<br><br>
+    <strong style="color:#085041;">Coût :</strong> Accepter une éventuelle incohérence temporaire → modèle BASE (vs ACID).
+    <br><br>
+    <span class="tag" style="background:#9FE1CB; color:#04342C;">BASE</span>
+    <span class="tag" style="background:#9FE1CB; color:#04342C;">Eventual consistency</span>
+    <span class="tag" style="background:#9FE1CB; color:#04342C;">Réplication async</span>
   </div>
-  <div style="flex:1;">
-    <div style="font-weight:500; font-size:14px; color:#4A1B0C;">Sous quelle forme arrivent les données ?</div>
-    <div style="font-size:12px; color:#993C1D; margin-top:2px;">Structuré (SQL) · Semi-structuré (JSON/XML) · Non-structuré (images, texte)</div>
-  </div>
-  <svg width="48" height="32" viewBox="0 0 48 32">
-    <rect x="2" y="8" width="14" height="16" rx="3" fill="#F0997B"/>
-    <ellipse cx="28" cy="16" rx="8" ry="10" fill="#D85A30"/>
-    <polygon points="40,6 48,26 32,26" fill="#993C1D"/>
-  </svg>
-</div>
-<div id="v3-detail" class="detail-box" style="background:#FDF4F0; border:1px solid #F0997B; color:#4A1B0C;">
-  <strong style="color:#712B13;">Exemples concrets :</strong><br>
-  Logs serveur (texte brut) · Tweets (JSON semi-structuré) · IRM médicale (images DICOM) · Transactions SQL (structuré)<br><br>
-  <strong style="color:#712B13;">Enjeu M1 :</strong> 80% des données mondiales sont non-structurées. Les bases NoSQL (MongoDB, Cassandra, Neo4j) et les data lakes remplacent les schémas fixes pour absorber cette diversité.<br><br>
-  <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">NoSQL</span>
-  <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">Parquet/Avro</span>
-  <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">Schema-on-read</span>
-  <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">NLP / CV</span>
-</div>
 
-<!-- V4 VÉRACITÉ -->
-<div class="card" onclick="toggle('v4')" style="background:#FBEAF0; border:1.5px solid #D4537E;">
-  <div style="min-width:56px; text-align:center;">
-    <div style="font-size:28px; font-weight:500; color:#72243E; line-height:1;">V4</div>
-    <div style="font-size:10px; color:#993556; letter-spacing:.04em;">VÉRACITÉ</div>
+  <div id="cap-p" class="detail-box" style="background:#FAECE7; border:1px solid #D85A30; color:#4A1B0C;">
+    <strong style="color:#712B13;">Tolérance au partitionnement (P) — Partition tolerance</strong><br>
+    Le système continue de fonctionner même si des nœuds ne peuvent plus communiquer entre eux (coupure réseau, perte de paquets).<br><br>
+    <strong style="color:#712B13;">Exemple :</strong> Un cluster Cassandra en 3 datacenters continue de fonctionner si le lien réseau entre Europe et USA est coupé.<br><br>
+    <strong style="color:#712B13;">Réalité :</strong> Dans les systèmes distribués, P est quasi-obligatoire. Le vrai choix est donc entre C et A.
+    <br><br>
+    <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">Split-brain</span>
+    <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">Network partition</span>
+    <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">Gossip protocol</span>
   </div>
-  <div style="flex:1;">
-    <div style="font-weight:500; font-size:14px; color:#4B1528;">Peut-on faire confiance aux données ?</div>
-    <div style="font-size:12px; color:#993556; margin-top:2px;">Bruit · Doublons · Valeurs manquantes · Biais de collecte</div>
-  </div>
-  <svg width="48" height="32" viewBox="0 0 48 32">
-    <circle cx="24" cy="16" r="12" fill="#ED93B1" opacity=".5" stroke="#D4537E" stroke-width="1.5"/>
-    <path d="M16 16 L22 22 L32 10" fill="none" stroke="#72243E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-</div>
-<div id="v4-detail" class="detail-box" style="background:#FDF2F6; border:1px solid #ED93B1; color:#4B1528;">
-  <strong style="color:#72243E;">Exemples concrets :</strong><br>
-  Capteurs défectueux renvoyant des valeurs aberrantes · Données clients dupliquées après fusion · Biais dans les données d'entraînement IA (ex. biais racial dans les algorithmes de reconnaissance)<br><br>
-  <strong style="color:#72243E;">Enjeu M1 :</strong> "Garbage in, garbage out" — un modèle ML sur données sales donne des prédictions fausses. La qualité des données conditionne tout le pipeline aval.<br><br>
-  <span class="tag" style="background:#F4C0D1; color:#4B1528;">Data quality</span>
-  <span class="tag" style="background:#F4C0D1; color:#4B1528;">ETL / ELT</span>
-  <span class="tag" style="background:#F4C0D1; color:#4B1528;">Deduplication</span>
-  <span class="tag" style="background:#F4C0D1; color:#4B1528;">Data lineage</span>
-</div>
 
-<!-- V5 VALEUR -->
-<div class="card" onclick="toggle('v5')" style="background:#FAEEDA; border:1.5px solid #EF9F27;">
-  <div style="min-width:56px; text-align:center;">
-    <div style="font-size:28px; font-weight:500; color:#633806; line-height:1;">V5</div>
-    <div style="font-size:10px; color:#854F0B; letter-spacing:.04em;">VALEUR</div>
-  </div>
-  <div style="flex:1;">
-    <div style="font-weight:500; font-size:14px; color:#412402;">Qu'est-ce qu'on en tire concrètement ?</div>
-    <div style="font-size:12px; color:#854F0B; margin-top:2px;">La donnée brute ne vaut rien — c'est l'insight actionnable qui compte</div>
-  </div>
-  <svg width="48" height="32" viewBox="0 0 48 32">
-    <polygon points="24,3 28,13 40,13 31,20 34,30 24,24 14,30 17,20 8,13 20,13" fill="#EF9F27"/>
-  </svg>
-</div>
-<div id="v5-detail" class="detail-box" style="background:#FDF7EC; border:1px solid #FAC775; color:#412402;">
-  <strong style="color:#633806;">Exemples concrets :</strong><br>
-  Netflix : réduction du churn de 4% → économie de 1 Md$/an · Amazon : recommandations = 35% du CA · Météo France : modèles sur 10 Po → alertes précises sauvant des vies<br><br>
-  <strong style="color:#633806;">Enjeu M1 :</strong> Sans valeur métier, les 4 autres V sont sans intérêt. La data science, le ML et la dataviz sont les outils qui transforment la masse de données en décisions.<br><br>
-  <span class="tag" style="background:#FAC775; color:#412402;">Machine Learning</span>
-  <span class="tag" style="background:#FAC775; color:#412402;">BI / Dataviz</span>
-  <span class="tag" style="background:#FAC775; color:#412402;">KPI / ROI</span>
-  <span class="tag" style="background:#FAC775; color:#412402;">Data-driven</span>
-</div>
+  <div class="section-title">Familles NoSQL — cliquer pour comprendre quand les utiliser</div>
 
-<!-- Pipeline -->
-<div class="pipeline">
-  <div class="pipeline-title">Pipeline Big Data — les 5 V en action</div>
-  <div class="pipeline-row">
-    <div class="pipeline-step" style="background:#EEEDFE; color:#26215C;">Sources massives (V1)</div>
-    <span class="arrow">→</span>
-    <div class="pipeline-step" style="background:#E1F5EE; color:#04342C;">Ingestion rapide (V2)</div>
-    <span class="arrow">→</span>
-    <div class="pipeline-step" style="background:#FAECE7; color:#4A1B0C;">Formats divers (V3)</div>
-    <span class="arrow">→</span>
-    <div class="pipeline-step" style="background:#FBEAF0; color:#4B1528;">Nettoyage (V4)</div>
-    <span class="arrow">→</span>
-    <div class="pipeline-step" style="background:#FAEEDA; color:#412402;">Valeur métier (V5)</div>
+  <div class="db-grid">
+    <div class="db-card" style="background:#EEEDFE; border:1.5px solid #7F77DD;" onclick="toggleDb('kv')">
+      <div style="font-weight:500; font-size:13px; color:#26215C;">Clé-Valeur</div>
+      <div style="font-size:11px; color:#534AB7; margin:3px 0 6px;">Redis · DynamoDB</div>
+      <div style="font-size:11px; color:#3C3489;">Lecture/écriture ultra-rapide sur clé unique</div>
+    </div>
+    <div class="db-card" style="background:#E1F5EE; border:1.5px solid #1D9E75;" onclick="toggleDb('doc')">
+      <div style="font-weight:500; font-size:13px; color:#04342C;">Document</div>
+      <div style="font-size:11px; color:#0F6E56; margin:3px 0 6px;">MongoDB · CouchDB</div>
+      <div style="font-size:11px; color:#085041;">JSON/BSON, schéma flexible, requêtes riches</div>
+    </div>
+    <div class="db-card" style="background:#FAECE7; border:1.5px solid #D85A30;" onclick="toggleDb('col')">
+      <div style="font-weight:500; font-size:13px; color:#4A1B0C;">Colonnes larges</div>
+      <div style="font-size:11px; color:#993C1D; margin:3px 0 6px;">Cassandra · HBase</div>
+      <div style="font-size:11px; color:#712B13;">Écritures massives distribuées</div>
+    </div>
+    <div class="db-card" style="background:#FDF2F6; border:1.5px solid #D4537E;" onclick="toggleDb('graph')">
+      <div style="font-weight:500; font-size:13px; color:#4B1528;">Graphe</div>
+      <div style="font-size:11px; color:#993556; margin:3px 0 6px;">Neo4j · Amazon Neptune</div>
+      <div style="font-size:11px; color:#72243E;">Relations comme données de 1ère classe</div>
+    </div>
+    <div class="db-card" style="background:#FAEEDA; border:1.5px solid #EF9F27;" onclick="toggleDb('ts')">
+      <div style="font-weight:500; font-size:13px; color:#412402;">Séries temporelles</div>
+      <div style="font-size:11px; color:#854F0B; margin:3px 0 6px;">InfluxDB · TimescaleDB</div>
+      <div style="font-size:11px; color:#633806;">IoT, métriques, monitoring</div>
+    </div>
+    <div class="db-card" style="background:#EAF3DE; border:1.5px solid #639922;" onclick="toggleDb('search')">
+      <div style="font-weight:500; font-size:13px; color:#173404;">Recherche full-text</div>
+      <div style="font-size:11px; color:#3B6D11; margin:3px 0 6px;">Elasticsearch · Solr</div>
+      <div style="font-size:11px; color:#27500A;">Index inversé, recherche texte</div>
+    </div>
   </div>
-</div>
+
+  <div id="db-kv" class="detail-box" style="background:#F5F4FE; border:1px solid #AFA9EC; color:#26215C;">
+    <strong style="color:#3C3489;">Clé-Valeur — le plus simple, le plus rapide</strong><br>
+    Structure : <code style="background:#CECBF6; padding:1px 5px; border-radius:4px; font-size:11px;">GET/SET "user:42" → {json}</code><br><br>
+    <strong style="color:#3C3489;">Cas d'usage :</strong> Cache de sessions web (Redis) · Panier e-commerce · Rate limiting · Leaderboard gaming<br><br>
+    <strong style="color:#3C3489;">Position CAP :</strong> AP (Redis en cluster) ou CP (selon config). Tout en mémoire → latence &lt; 1ms.<br><br>
+    <span class="tag" style="background:#CECBF6; color:#26215C;">Cache</span>
+    <span class="tag" style="background:#CECBF6; color:#26215C;">Session</span>
+    <span class="tag" style="background:#CECBF6; color:#26215C;">TTL</span>
+    <span class="tag" style="background:#CECBF6; color:#26215C;">In-memory</span>
+  </div>
+
+  <div id="db-doc" class="detail-box" style="background:#F0FAF5; border:1px solid #5DCAA5; color:#04342C;">
+    <strong style="color:#085041;">Document — le plus polyvalent</strong><br>
+    Stocke des documents JSON/BSON. Pas de schéma fixe — chaque document peut avoir des champs différents.<br><br>
+    <strong style="color:#085041;">Cas d'usage :</strong> Catalogue produits · Profils utilisateurs · CMS · Applications mobiles<br><br>
+    <strong style="color:#085041;">Position CAP :</strong> CP (MongoDB en mode Write Concern majority) — cohérence forte possible au prix de la latence.<br><br>
+    <span class="tag" style="background:#9FE1CB; color:#04342C;">Schema-less</span>
+    <span class="tag" style="background:#9FE1CB; color:#04342C;">BSON</span>
+    <span class="tag" style="background:#9FE1CB; color:#04342C;">Aggregation pipeline</span>
+  </div>
+
+  <div id="db-col" class="detail-box" style="background:#FDF4F0; border:1px solid #F0997B; color:#4A1B0C;">
+    <strong style="color:#712B13;">Colonnes larges — champion des writes massifs</strong><br>
+    Données organisées en familles de colonnes, optimisées pour les lectures/écritures par ligne. Partitionnement natif sur des milliards de lignes.<br><br>
+    <strong style="color:#712B13;">Cas d'usage :</strong> Historique de messages (WhatsApp utilise Cassandra) · Métriques IoT · Logs applicatifs<br><br>
+    <strong style="color:#712B13;">Position CAP :</strong> AP (Cassandra — tunable consistency via quorum) ou CP (HBase basé sur HDFS/Zookeeper).<br><br>
+    <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">Column family</span>
+    <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">Quorum</span>
+    <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">Tunable consistency</span>
+    <span class="tag" style="background:#F5C4B3; color:#4A1B0C;">LSM tree</span>
+  </div>
+
+  <div id="db-graph" class="detail-box" style="background:#FDF2F6; border:1px solid #ED93B1; color:#4B1528;">
+    <strong style="color:#72243E;">Graphe — pour les relations complexes</strong><br>
+    Nœuds + arêtes avec propriétés. Traversée de graphe native, bien plus efficace qu'une jointure SQL récursive.<br><br>
+    <strong style="color:#72243E;">Cas d'usage :</strong> Réseaux sociaux (amis d'amis) · Détection de fraude · Recommandations · Gestion d'infrastructure<br><br>
+    <strong style="color:#72243E;">Langage :</strong> Cypher (Neo4j) — <code style="background:#F4C0D1; padding:1px 5px; border-radius:4px; font-size:11px;">MATCH (u)-[:FRIEND]->(f) RETURN f</code><br><br>
+    <span class="tag" style="background:#F4C0D1; color:#4B1528;">Cypher</span>
+    <span class="tag" style="background:#F4C0D1; color:#4B1528;">PageRank</span>
+    <span class="tag" style="background:#F4C0D1; color:#4B1528;">Traversal</span>
+  </div>
+
+  <div id="db-ts" class="detail-box" style="background:#FDF7EC; border:1px solid #FAC775; color:#412402;">
+    <strong style="color:#633806;">Séries temporelles — optimisé pour le temps</strong><br>
+    Données horodatées, compressées et indexées par temps. Requêtes comme "moyenne sur les 5 dernières minutes" sont natives.<br><br>
+    <strong style="color:#633806;">Cas d'usage :</strong> Monitoring Kubernetes (Prometheus + InfluxDB) · Données boursières · Capteurs industriels<br><br>
+    <strong style="color:#633806;">Particularité :</strong> Rétention de données automatique (TTL par plage de temps), downsampling intégré.<br><br>
+    <span class="tag" style="background:#FAC775; color:#412402;">Time-series</span>
+    <span class="tag" style="background:#FAC775; color:#412402;">Downsampling</span>
+    <span class="tag" style="background:#FAC775; color:#412402;">Prometheus</span>
+  </div>
+
+  <div id="db-search" class="detail-box" style="background:#EAF3DE; border:1px solid #97C459; color:#173404;">
+    <strong style="color:#27500A;">Recherche full-text — index inversé</strong><br>
+    Découpe les textes en tokens, construit un index inversé (mot → documents). Scoring TF-IDF / BM25 pour le ranking.<br><br>
+    <strong style="color:#27500A;">Cas d'usage :</strong> Moteur de recherche e-commerce · Logs centralisés (ELK Stack) · Autocomplétion<br><br>
+    <strong style="color:#27500A;">Particularité :</strong> Souvent utilisé en complément d'une DB principale (MongoDB + Elasticsearch).<br><br>
+    <span class="tag" style="background:#C0DD97; color:#173404;">TF-IDF</span>
+    <span class="tag" style="background:#C0DD97; color:#173404;">Inverted index</span>
+    <span class="tag" style="background:#C0DD97; color:#173404;">ELK Stack</span>
+    <span class="tag" style="background:#C0DD97; color:#173404;">Kibana</span>
+  </div>
+
+  <div style="margin-top:20px; padding:12px 16px; border-radius:10px; background:var(--bg2); border:1px solid var(--border);">
+    <div style="font-size:12px; font-weight:500; color:var(--text); margin-bottom:8px;">ACID vs BASE — deux philosophies opposées</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div style="padding:8px 12px; border-radius:8px; background:#EEEDFE; border:1px solid #AFA9EC;">
+        <div style="font-size:12px; font-weight:500; color:#3C3489; margin-bottom:4px;">ACID (SQL classique)</div>
+        <div style="font-size:11px; color:#534AB7; line-height:1.5;"><strong style="color:#26215C;">A</strong>tomicité · <strong style="color:#26215C;">C</strong>ohérence<br><strong style="color:#26215C;">I</strong>solation · <strong style="color:#26215C;">D</strong>urabilité<br>→ Transactions bancaires, ERP</div>
+      </div>
+      <div style="padding:8px 12px; border-radius:8px; background:#E1F5EE; border:1px solid #5DCAA5;">
+        <div style="font-size:12px; font-weight:500; color:#085041; margin-bottom:4px;">BASE (NoSQL typique)</div>
+        <div style="font-size:11px; color:#0F6E56; line-height:1.5;"><strong style="color:#04342C;">B</strong>asically Available<br><strong style="color:#04342C;">S</strong>oft state · <strong style="color:#04342C;">E</strong>ventual consistency<br>→ Réseaux sociaux, streaming</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+  SECTION 5 : FAMILLES NoSQL ANIMÉES
+════════════════════════════════════ -->
+<section id="tab-familles" class="tab-section">
+  <p class="section-intro">Explorez les quatre grandes familles NoSQL avec des visualisations interactives de leurs structures internes, cas d'usage et requêtes types.</p>
+
+  <style>
+    @keyframes fadeSlide { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .anim-in { animation: fadeSlide .35s ease forwards; }
+    .family-tab { cursor:pointer; transition: all .15s; user-select:none; }
+    .family-tab:hover { opacity:.82; }
+  </style>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+    <div class="family-tab" id="tab-kv" onclick="showFamily('kv')" style="padding:10px 8px;border-radius:10px;background:#EEEDFE;border:2px solid #534AB7;text-align:center;cursor:pointer;">
+      <div style="font-size:13px;font-weight:500;color:#26215C;">Clé–Valeur</div>
+      <div style="font-size:11px;color:#534AB7;margin-top:2px;">Redis · DynamoDB</div>
+    </div>
+    <div class="family-tab" id="tab-doc" onclick="showFamily('doc')" style="padding:10px 8px;border-radius:10px;background:#F1EFE8;border:1.5px solid #B4B2A9;text-align:center;cursor:pointer;">
+      <div style="font-size:13px;font-weight:500;color:#2C2C2A;">Document</div>
+      <div style="font-size:11px;color:#5F5E5A;margin-top:2px;">MongoDB · CouchDB</div>
+    </div>
+    <div class="family-tab" id="tab-col" onclick="showFamily('col')" style="padding:10px 8px;border-radius:10px;background:#F1EFE8;border:1.5px solid #B4B2A9;text-align:center;cursor:pointer;">
+      <div style="font-size:13px;font-weight:500;color:#2C2C2A;">Colonnes larges</div>
+      <div style="font-size:11px;color:#5F5E5A;margin-top:2px;">Cassandra · HBase</div>
+    </div>
+    <div class="family-tab" id="tab-graph" onclick="showFamily('graph')" style="padding:10px 8px;border-radius:10px;background:#F1EFE8;border:1.5px solid #B4B2A9;text-align:center;cursor:pointer;">
+      <div style="font-size:13px;font-weight:500;color:#2C2C2A;">Graphe</div>
+      <div style="font-size:11px;color:#5F5E5A;margin-top:2px;">Neo4j · Amazon Neptune</div>
+    </div>
+  </div>
+
+  <div id="family-display" style="min-height:360px;"></div>
+</section>
+
+<!-- ════════════════════════════════════
+  SECTION 6 : TYPES & FORMATS
+════════════════════════════════════ -->
+<section id="tab-formats" class="tab-section">
+  <p class="section-intro">Types de données et formats de fichiers dans l'écosystème Big Data. Comprendre quand utiliser CSV, JSON, Parquet, Avro ou ORC selon le contexte.</p>
+
+  <style>
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes scan-col { 0%{opacity:.2} 50%{opacity:1} 100%{opacity:.2} }
+    .anim-in2 { animation: fadeUp .3s ease forwards; }
+    .fmt-tab { cursor:pointer; border-radius:8px; padding:8px 10px; text-align:center; transition:all .15s; }
+    .fmt-tab:hover { opacity:.82; }
+    .scan-anim { animation: scan-col 1.8s ease-in-out infinite; }
+  </style>
+
+  <div style="margin-bottom:10px;">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Catégorie</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <div class="fmt-tab" id="cat-struct" onclick="showCat('struct')" style="background:#EEEDFE;border:2px solid #534AB7;flex:1;min-width:120px;">
+        <div style="font-size:13px;font-weight:500;color:#26215C;">Structuré</div>
+        <div style="font-size:10px;color:#534AB7;">Schéma fixe · SQL</div>
+      </div>
+      <div class="fmt-tab" id="cat-semi" onclick="showCat('semi')" style="background:#F1EFE8;border:1.5px solid #B4B2A9;flex:1;min-width:120px;">
+        <div style="font-size:13px;font-weight:500;color:#2C2C2A;">Semi-structuré</div>
+        <div style="font-size:10px;color:#5F5E5A;">Flexible · JSON/XML</div>
+      </div>
+      <div class="fmt-tab" id="cat-nonst" onclick="showCat('nonst')" style="background:#F1EFE8;border:1.5px solid #B4B2A9;flex:1;min-width:120px;">
+        <div style="font-size:13px;font-weight:500;color:#2C2C2A;">Non-structuré</div>
+        <div style="font-size:10px;color:#5F5E5A;">Texte · Images · Vidéo</div>
+      </div>
+      <div class="fmt-tab" id="cat-colum" onclick="showCat('colum')" style="background:#F1EFE8;border:1.5px solid #B4B2A9;flex:1;min-width:120px;">
+        <div style="font-size:13px;font-weight:500;color:#2C2C2A;">Formats Big Data</div>
+        <div style="font-size:10px;color:#5F5E5A;">Parquet · Avro · ORC</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="fmt-formats" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;min-height:36px;"></div>
+  <div id="fmt-display" style="min-height:340px;"></div>
+</section>
 
 <script>
-function toggle(id) {
-  document.getElementById(id + '-detail').classList.toggle('open');
+// ── TAB SWITCHING ──
+function switchTab(id) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
 }
+
+// ── 5V CARDS ──
+function toggleV(card) {
+  card.classList.toggle('open');
+}
+
+// ── BATCH ANIMATION ──
+const bars = [0,1,2,3,4,5].map(i => document.getElementById('bar'+i));
+const heights = [0,0,0,0,0,0];
+let batchPhase = 'filling';
+let batchTick = 0;
+
+function animateBatch() {
+  batchTick++;
+  const status = document.getElementById('batch-status');
+
+  if (batchPhase === 'filling') {
+    const idx = batchTick % 6;
+    heights[idx] = Math.min(heights[idx] + Math.random() * 18 + 8, 88);
+    bars.forEach((b,i) => b.style.height = heights[i] + 'px');
+
+    const total = heights.reduce((a,b)=>a+b,0);
+    if (total > 450) {
+      batchPhase = 'processing';
+      batchTick = 0;
+      status.textContent = '⚙ Traitement en cours (MapReduce / Spark)...';
+      status.style.color = '#f5a623';
+    } else {
+      status.textContent = '⟳ Accumulation des données... (' + Math.round(total/5) + ' Mo)';
+      status.style.color = 'var(--muted)';
+    }
+  } else if (batchPhase === 'processing') {
+    bars.forEach(b => { b.style.background = '#f5a623'; b.style.transition = 'background .3s'; });
+    if (batchTick > 10) {
+      batchPhase = 'done';
+      status.textContent = '✓ Traitement terminé — résultats disponibles';
+      status.style.color = '#10c9a0';
+    }
+  } else if (batchPhase === 'done') {
+    bars.forEach(b => { b.style.background = 'rgba(16,201,160,.6)'; });
+    if (batchTick > 18) {
+      // reset
+      batchPhase = 'filling';
+      batchTick = 0;
+      heights.fill(0);
+      bars.forEach((b,i) => { b.style.height='2px'; b.style.background = `rgba(79,127,255,${0.5+i*0.1})`; b.style.transition=''; });
+      status.textContent = '⟳ Nouveau cycle — accumulation...';
+      status.style.color = 'var(--muted)';
+    }
+  }
+}
+
+// ── STREAM ANIMATION ──
+const streamCanvas = document.getElementById('stream-canvas');
+const colors = ['#10c9a0','#4f7fff','#f5a623','#e040a0','#ff5f57','#7c3aff','#39d353'];
+let streamCount = 0;
+const eventTypes = ['click','achat','login','API call','IoT','fraude?','msg'];
+
+function spawnEvent() {
+  const dot = document.createElement('div');
+  dot.className = 'stream-event';
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  dot.style.background = color;
+  dot.style.boxShadow = `0 0 6px ${color}80`;
+  const lane = 20 + Math.random() * 50;
+  dot.style.top = lane + 'px';
+  const duration = 1.8 + Math.random() * 1.2;
+  dot.style.animationDuration = duration + 's';
+  dot.style.animationDelay = (Math.random() * .3) + 's';
+
+  const lbl = document.createElement('span');
+  lbl.style.cssText = `position:absolute;top:-14px;left:0;font-size:8px;font-family:'DM Mono',monospace;color:${color};white-space:nowrap;`;
+  lbl.textContent = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+  dot.appendChild(lbl);
+  streamCanvas.appendChild(dot);
+  streamCount++;
+
+  dot.addEventListener('animationend', () => dot.remove());
+  document.getElementById('stream-counter').textContent = streamCount + ' evt total';
+}
+
+setInterval(animateBatch, 400);
+setInterval(spawnEvent, 350);
+
+// ── CAP THEOREM ──
+function toggleCap(id) {
+  ['c','a','p'].forEach(x => {
+    const el = document.getElementById('cap-'+x);
+    if(x === id) el.classList.toggle('open');
+    else el.classList.remove('open');
+  });
+}
+function toggleDb(id) {
+  ['kv','doc','col','graph','ts','search'].forEach(x => {
+    const el = document.getElementById('db-'+x);
+    if(x === id) el.classList.toggle('open');
+    else el.classList.remove('open');
+  });
+}
+
+// ── FAMILLES NoSQL ──
+const families = {
+  kv: {
+    color:'#534AB7', bg:'#EEEDFE', light:'#CECBF6', txt:'#26215C', sub:'#534AB7',
+    title:'Clé–Valeur — le plus simple et le plus rapide',
+    desc:'Chaque donnée est stockée sous une clé unique → valeur opaque. Accès en O(1), latence < 1ms. Le moteur ne connaît pas la structure de la valeur.',
+    usecases:'Sessions utilisateur · Cache applicatif · Paniers e-commerce · Rate limiting · Leaderboards gaming',
+    svg: `<svg width="100%" viewBox="0 0 680 240">
+      <defs><marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="40" y="20" width="140" height="200" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="1"/>
+      <text x="110" y="42" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#26215C;">Hash Table</text>
+      <line x1="40" y1="50" x2="180" y2="50" stroke="#AFA9EC" stroke-width=".5"/>
+      ${[['user:101','Alice'],['user:102','Bob'],['session:xyz','token…'],['cart:42','[{…},{…}]'],['rate:ip1','42/min']].map((r,i)=>`
+        <rect x="44" y="${58+i*30}" width="60" height="22" rx="4" fill="#CECBF6"/>
+        <text x="74" y="${69+i*30}" text-anchor="middle" dominant-baseline="central" style="font-size:10px;fill:#26215C;">${r[0]}</text>
+        <rect x="112" y="${58+i*30}" width="64" height="22" rx="4" fill="#AFA9EC"/>
+        <text x="144" y="${69+i*30}" text-anchor="middle" dominant-baseline="central" style="font-size:10px;fill:#26215C;">${r[1]}</text>
+      `).join('')}
+      <line x1="200" y1="70" x2="300" y2="70" stroke="#534AB7" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr2)"/>
+      <text x="250" y="62" text-anchor="middle" style="font-size:10px;fill:#534AB7;">GET user:101</text>
+      <rect x="305" y="50" width="120" height="40" rx="8" fill="#7F77DD"/>
+      <text x="365" y="70" text-anchor="middle" dominant-baseline="central" style="font-size:12px;font-weight:500;fill:#EEEDFE;">"Alice"</text>
+      <text x="365" y="105" text-anchor="middle" style="font-size:10px;fill:#534AB7;">< 1ms</text>
+      <rect x="460" y="20" width="180" height="200" rx="8" fill="#F1EFE8" stroke="#B4B2A9" stroke-width=".5"/>
+      <text x="550" y="42" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#2C2C2A;">Cas d'usage</text>
+      <line x1="464" y1="50" x2="636" y2="50" stroke="#B4B2A9" stroke-width=".5"/>
+      ${['Cache (TTL auto)','Session HTTP','Panier temps-réel','Rate limiting','Pub/Sub messaging'].map((t,i)=>`
+        <rect x="470" y="${56+i*30}" width="8" height="8" rx="2" fill="#7F77DD"/>
+        <text x="485" y="${64+i*30}" style="font-size:11px;fill:#2C2C2A;">${t}</text>
+      `).join('')}
+    </svg>`
+  },
+  doc: {
+    color:'#1D9E75', bg:'#E1F5EE', light:'#9FE1CB', txt:'#04342C', sub:'#0F6E56',
+    title:'Document — flexibilité maximale',
+    desc:'Chaque document est un objet JSON/BSON auto-descriptif. Pas de schéma imposé — les documents d\'une même collection peuvent avoir des champs différents. Requêtes sur les champs internes.',
+    usecases:'Catalogues produits · CMS · Profils utilisateur · Données hétérogènes · APIs REST',
+    svg: `<svg width="100%" viewBox="0 0 680 240">
+      <defs><marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="30" y="15" width="220" height="210" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+      <text x="140" y="36" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#04342C;">Collection "produits"</text>
+      <line x1="30" y1="44" x2="250" y2="44" stroke="#5DCAA5" stroke-width=".5"/>
+      <rect x="40" y="50" width="195" height="75" rx="6" fill="#9FE1CB"/>
+      <text x="54" y="67" style="font-size:10px;font-weight:500;fill:#04342C;">{ _id: "p1"</text>
+      <text x="54" y="82" style="font-size:10px;fill:#085041;">  nom: "MacBook Pro"</text>
+      <text x="54" y="97" style="font-size:10px;fill:#085041;">  prix: 2499</text>
+      <text x="54" y="112" style="font-size:10px;fill:#085041;">  specs: {ram:16, ssd:512} }</text>
+      <rect x="40" y="134" width="195" height="62" rx="6" fill="#9FE1CB"/>
+      <text x="54" y="151" style="font-size:10px;font-weight:500;fill:#04342C;">{ _id: "p2"</text>
+      <text x="54" y="166" style="font-size:10px;fill:#085041;">  nom: "Clavier"</text>
+      <text x="54" y="181" style="font-size:10px;fill:#085041;">  couleur: "noir" }</text>
+      <text x="140" y="212" text-anchor="middle" style="font-size:10px;fill:#0F6E56;">Champs différents = OK</text>
+      <rect x="270" y="80" width="180" height="30" rx="6" fill="#1D9E75"/>
+      <text x="360" y="95" text-anchor="middle" dominant-baseline="central" style="font-size:10px;fill:#E1F5EE;">db.produits.find({prix:{$gt:1000}})</text>
+      <line x1="450" y1="95" x2="490" y2="95" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <rect x="495" y="50" width="160" height="75" rx="6" fill="#9FE1CB"/>
+      <text x="510" y="67" style="font-size:10px;font-weight:500;fill:#04342C;">Résultat :</text>
+      <text x="510" y="82" style="font-size:10px;fill:#085041;">[{ _id:"p1",</text>
+      <text x="510" y="97" style="font-size:10px;fill:#085041;">  nom:"MacBook Pro",</text>
+      <text x="510" y="112" style="font-size:10px;fill:#085041;">  prix:2499 }]</text>
+    </svg>`
+  },
+  col: {
+    color:'#D85A30', bg:'#FAECE7', light:'#F5C4B3', txt:'#4A1B0C', sub:'#993C1D',
+    title:'Colonnes larges — optimisé pour l\'écriture à grande échelle',
+    desc:'Les données sont organisées par colonnes (et non par lignes comme en SQL). Chaque ligne peut avoir des colonnes différentes. Conçu pour des écritures massives distribuées sur des milliers de nœuds.',
+    usecases:'Séries temporelles · Logs massifs · Métriques IoT · Historique de transactions · Netflix (activité utilisateur)',
+    svg: `<svg width="100%" viewBox="0 0 680 240">
+      <defs><marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="20" y="15" width="430" height="200" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="1"/>
+      <text x="235" y="36" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#4A1B0C;">Table Cassandra — stockage par colonnes</text>
+      <line x1="20" y1="44" x2="450" y2="44" stroke="#F0997B" stroke-width=".5"/>
+      ${['Row Key','col: ts','col: valeur','col: tag','col: region'].map((h,i)=>`
+        <rect x="${24+i*82}" y="50" width="78" height="24" rx="3" fill="#D85A30"/>
+        <text x="${63+i*82}" y="62" text-anchor="middle" dominant-baseline="central" style="font-size:10px;font-weight:500;fill:#FAECE7;">${h}</text>
+      `).join('')}
+      ${[['sensor:001','2024-01-10','23.4°C','temp','Paris'],['sensor:002','2024-01-10','55%','humid','Lyon'],['sensor:003','2024-01-10','1013hPa','press','—']].map((r,i)=>`
+        ${r.map((c,j)=>`
+          <rect x="${24+j*82}" y="${80+i*36}" width="78" height="28" rx="3" fill="${j===0?'#F0997B':'#F5C4B3'}" stroke="#D85A30" stroke-width=".3"/>
+          <text x="${63+j*82}" y="${94+i*36}" text-anchor="middle" dominant-baseline="central" style="font-size:10px;fill:#4A1B0C;">${c}</text>
+        `).join('')}
+      `).join('')}
+      <text x="235" y="218" text-anchor="middle" style="font-size:10px;fill:#993C1D;">Lecture = scan de colonnes entières (très rapide)</text>
+    </svg>`
+  },
+  graph: {
+    color:'#D4537E', bg:'#FBEAF0', light:'#F4C0D1', txt:'#4B1528', sub:'#993556',
+    title:'Graphe — relations comme données de première classe',
+    desc:'Les nœuds (entités) et les arêtes (relations) sont tous deux stockés et indexés. Traverser des relations est aussi rapide que lire une ligne. Idéal quand les connexions SONT la donnée.',
+    usecases:'Réseaux sociaux · Moteurs de recommandation · Détection de fraude · Graphes de connaissance · Routage réseau',
+    svg: `<svg width="100%" viewBox="0 0 680 240">
+      <defs><marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      ${[[120,60,'Alice','#D4537E','#FBEAF0','#4B1528'],[280,40,'Bob','#993556','#FBEAF0','#4B1528'],[200,150,'Carol','#D4537E','#FBEAF0','#4B1528'],[360,130,'Django','#72243E','#F4C0D1','#4B1528'],[100,175,'Eve','#993556','#FBEAF0','#4B1528']].map(([x,y,n,stroke,fill,tc])=>`
+        <circle cx="${x}" cy="${y}" r="22" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>
+        <text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" style="font-size:11px;font-weight:500;fill:${tc};">${n}</text>
+      `).join('')}
+      <line x1="140" y1="68" x2="260" y2="48" stroke="#D4537E" stroke-width="1.2" marker-end="url(#arr2)"/>
+      <text x="200" y="50" text-anchor="middle" style="font-size:9px;fill:#993556;">CONNAÎT</text>
+      <line x1="133" y1="80" x2="188" y2="133" stroke="#D4537E" stroke-width="1.2" marker-end="url(#arr2)"/>
+      <text x="148" y="112" style="font-size:9px;fill:#993556;">SUIT</text>
+      <line x1="220" y1="150" x2="340" y2="138" stroke="#D4537E" stroke-width="1.2" marker-end="url(#arr2)"/>
+      <text x="280" y="138" text-anchor="middle" style="font-size:9px;fill:#993556;">AIME</text>
+      <rect x="420" y="20" width="240" height="200" rx="8" fill="#F1EFE8" stroke="#B4B2A9" stroke-width=".5"/>
+      <text x="540" y="42" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#2C2C2A;">Requête Cypher (Neo4j)</text>
+      <line x1="424" y1="50" x2="656" y2="50" stroke="#B4B2A9" stroke-width=".5"/>
+      <text x="434" y="68" style="font-size:10px;fill:#4B1528;font-family:monospace;">MATCH (a:User)-</text>
+      <text x="434" y="84" style="font-size:10px;fill:#4B1528;font-family:monospace;">  [:CONNAÎT]->(b)-</text>
+      <text x="434" y="100" style="font-size:10px;fill:#4B1528;font-family:monospace;">  [:SUIT]->(c)</text>
+      <text x="434" y="116" style="font-size:10px;fill:#4B1528;font-family:monospace;">WHERE a.nom='Alice'</text>
+      <text x="434" y="132" style="font-size:10px;fill:#4B1528;font-family:monospace;">RETURN c.nom</text>
+      <line x1="430" y1="148" x2="650" y2="148" stroke="#ED93B1" stroke-width=".5"/>
+      <text x="434" y="165" style="font-size:10px;fill:#72243E;">→ "Django" (ami d'ami)</text>
+      <text x="434" y="181" style="font-size:10px;fill:#72243E;">En SQL : 3 jointures</text>
+      <text x="434" y="197" style="font-size:10px;fill:#72243E;">En Neo4j : 1 traversée</text>
+    </svg>`
+  }
+};
+
+function showFamily(name) {
+  ['kv','doc','col','graph'].forEach(k => {
+    const t = document.getElementById('tab-'+k);
+    const f = families[k];
+    if(k===name) {
+      t.style.background = f.bg;
+      t.style.border = `2px solid ${f.color}`;
+      t.querySelector('div').style.color = f.txt;
+      t.querySelectorAll('div')[1].style.color = f.sub;
+    } else {
+      t.style.background = '#F1EFE8';
+      t.style.border = '1.5px solid #B4B2A9';
+      t.querySelector('div').style.color = '#2C2C2A';
+      t.querySelectorAll('div')[1].style.color = '#5F5E5A';
+    }
+  });
+  const d = families[name];
+  const el = document.getElementById('family-display');
+  el.innerHTML = `
+    <div class="anim-in" style="border-radius:12px;overflow:hidden;border:1.5px solid ${d.color};background:${d.bg};">
+      <div style="padding:12px 16px 0;">
+        <div style="font-size:14px;font-weight:500;color:${d.txt};">${d.title}</div>
+        <div style="font-size:12px;color:${d.sub};margin-top:4px;line-height:1.5;">${d.desc}</div>
+      </div>
+      <div style="padding:4px 0 4px;">${d.svg}</div>
+      <div style="padding:0 16px 12px;font-size:12px;color:${d.txt};opacity:.8;"><strong style="color:${d.color};">Cas d'usage :</strong> ${d.usecases}</div>
+    </div>`;
+}
+showFamily('kv');
+
+// ── TYPES & FORMATS ──
+const cats = {
+  struct: {
+    color:'#534AB7', bg:'#EEEDFE', txt:'#26215C', sub:'#534AB7',
+    formats: [
+      { id:'csv', label:'CSV', color:'#534AB7', bg:'#EEEDFE', txt:'#26215C' },
+      { id:'sql', label:'SQL / RDBMS', color:'#534AB7', bg:'#EEEDFE', txt:'#26215C' }
+    ]
+  },
+  semi: {
+    color:'#1D9E75', bg:'#E1F5EE', txt:'#04342C', sub:'#0F6E56',
+    formats: [
+      { id:'json', label:'JSON', color:'#1D9E75', bg:'#E1F5EE', txt:'#04342C' },
+      { id:'xml', label:'XML', color:'#0F6E56', bg:'#E1F5EE', txt:'#04342C' },
+      { id:'yaml', label:'YAML', color:'#085041', bg:'#E1F5EE', txt:'#04342C' }
+    ]
+  },
+  nonst: {
+    color:'#D85A30', bg:'#FAECE7', txt:'#4A1B0C', sub:'#993C1D',
+    formats: [
+      { id:'text', label:'Texte brut / Logs', color:'#D85A30', bg:'#FAECE7', txt:'#4A1B0C' },
+      { id:'media', label:'Images / Vidéo', color:'#993C1D', bg:'#FAECE7', txt:'#4A1B0C' }
+    ]
+  },
+  colum: {
+    color:'#BA7517', bg:'#FAEEDA', txt:'#412402', sub:'#854F0B',
+    formats: [
+      { id:'parquet', label:'Parquet', color:'#BA7517', bg:'#FAEEDA', txt:'#412402' },
+      { id:'avro', label:'Avro', color:'#854F0B', bg:'#FAEEDA', txt:'#412402' },
+      { id:'orc', label:'ORC', color:'#633806', bg:'#FAEEDA', txt:'#412402' }
+    ]
+  }
+};
+
+const fmtData = {
+  csv: {
+    title:'CSV — Comma-Separated Values',
+    desc:'Format texte universel. Chaque ligne = un enregistrement. Colonnes séparées par une virgule. Simple mais sans typage, sans schéma, sans compression.',
+    pros:'Lisible · Import/Export universel · Compatible tout outil',
+    cons:'Pas de types · Pas de compression · Lent sur gros volumes',
+    svg:`<svg width="100%" viewBox="0 0 640 180">
+      <rect x="10" y="10" width="620" height="160" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="1"/>
+      <rect x="10" y="10" width="620" height="34" rx="8" fill="#534AB7"/>
+      <rect x="10" y="32" width="620" height="12" rx="0" fill="#534AB7"/>
+      ${['id','nom','age','ville','salaire'].map((h,i)=>`<text x="${35+i*118}" y="32" style="font-size:11px;font-weight:500;fill:#EEEDFE;">${h}</text>`).join('')}
+      ${[['1','Alice','28','Paris','45000'],['2','Bob','35','Lyon','52000'],['3','Carol','22','Nice','38000']].map((r,i)=>`
+        <rect x="10" y="${44+i*36}" width="620" height="36" rx="0" fill="${i%2===0?'#CECBF6':'#EEEDFE'}"/>
+        ${r.map((c,j)=>`<text x="${35+j*118}" y="${67+i*36}" style="font-size:11px;fill:#26215C;">${c}</text>`).join('')}
+      `).join('')}
+      <text x="320" y="168" text-anchor="middle" style="font-size:10px;fill:#534AB7;font-family:monospace;">1,Alice,28,Paris,45000</text>
+    </svg>`
+  },
+  sql: {
+    title:'SQL / SGBDR — données relationnelles',
+    desc:'Tables liées par des clés étrangères. Transactions ACID, schéma strict, intégrité référentielle. Le standard pour 50 ans de gestion de données structurées.',
+    pros:'ACID · Intégrité · Jointures puissantes · Outillage mature',
+    cons:'Scalabilité horizontale limitée · Schéma rigide',
+    svg:`<svg width="100%" viewBox="0 0 640 190">
+      <defs><marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="10" y="15" width="220" height="155" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+      <rect x="10" y="15" width="220" height="28" rx="8" fill="#534AB7"/>
+      <rect x="10" y="31" width="220" height="12" fill="#534AB7"/>
+      <text x="120" y="34" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#EEEDFE;">Table: commandes</text>
+      ${['cmd_id','user_id (FK)','montant','date'].map((h,i)=>`<text x="22" y="${58+i*22}" style="font-size:10px;fill:#26215C;">${h}</text>`).join('')}
+      <rect x="280" y="15" width="200" height="130" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+      <rect x="280" y="15" width="200" height="28" rx="8" fill="#534AB7"/>
+      <rect x="280" y="31" width="200" height="12" fill="#534AB7"/>
+      <text x="380" y="34" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#EEEDFE;">Table: utilisateurs</text>
+      ${['user_id (PK)','nom','email'].map((h,i)=>`<text x="292" y="${58+i*22}" style="font-size:10px;fill:#26215C;">${h}</text>`).join('')}
+      <path d="M230 80 L280 80" fill="none" stroke="#7F77DD" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr3)"/>
+      <text x="255" y="73" text-anchor="middle" style="font-size:9px;fill:#534AB7;">FK</text>
+      <rect x="500" y="15" width="130" height="80" rx="8" fill="#CECBF6" stroke="#534AB7" stroke-width="1"/>
+      <text x="565" y="35" text-anchor="middle" style="font-size:10px;font-weight:500;fill:#26215C;">ACID</text>
+      ${['Atomicité','Cohérence','Isolation','Durabilité'].map((p,i)=>`<text x="515" y="${50+i*14}" style="font-size:10px;fill:#26215C;">${p}</text>`).join('')}
+    </svg>`
+  },
+  json: {
+    title:'JSON — JavaScript Object Notation',
+    desc:'Format texte hiérarchique. Objets, tableaux, types primitifs. Omniprésent dans les APIs REST. Schéma flexible — un champ peut être absent ou changer de type.',
+    pros:'Lisible · Hiérarchique · APIs universelles · Support natif JS/Python',
+    cons:'Verbeux · Pas de schéma natif · Lent à parser à grande échelle',
+    svg:`<svg width="100%" viewBox="0 0 640 190">
+      <rect x="10" y="10" width="290" height="170" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+      <text x="155" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#04342C;">Exemple JSON</text>
+      ${['{ "id": 1,','  "nom": "Alice",','  "age": 28,','  "adresse": {','    "ville": "Paris",','    "cp": "75001"','  },','  "tags": ["admin","user"]','}'].map((l,i)=>`
+        <text x="22" y="${46+i*16}" style="font-size:10px;fill:${l.includes('"')&&l.trim().startsWith('"')?'#085041':l.includes('{')||l.includes('}')||l.includes('[')||l.includes(']')?'#1D9E75':'#04342C'};font-family:monospace;">${l.replace(/</g,'&lt;')}</text>
+      `).join('')}
+      <rect x="320" y="10" width="310" height="170" rx="8" fill="#F1EFE8" stroke="#B4B2A9" stroke-width=".5"/>
+      <text x="475" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#2C2C2A;">Caractéristiques</text>
+      ${['Imbrication illimitée','Types natifs (number, bool…)','Tableaux supportés','Pas de schéma imposé','UTF-8 universel'].map((t,i)=>`
+        <rect x="334" y="${46+i*26}" width="8" height="8" rx="2" fill="#1D9E75"/>
+        <text x="350" y="${54+i*26}" style="font-size:11px;fill:#2C2C2A;">${t}</text>
+      `).join('')}
+    </svg>`
+  },
+  xml: {
+    title:'XML — eXtensible Markup Language',
+    desc:'Format texte avec balises imbriquées. Très verbeux mais extensible. Standard dans les systèmes legacy (SOAP, EDI, configurations Java). Supporte les namespaces et la validation (XSD).',
+    pros:'Validation stricte (XSD) · Namespaces · Mature et universel',
+    cons:'Très verbeux · Parsing lent · Remplacé par JSON dans les APIs modernes',
+    svg:`<svg width="100%" viewBox="0 0 640 180">
+      <rect x="10" y="10" width="620" height="160" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"/>
+      <text x="320" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#04342C;">Exemple XML vs JSON — même donnée</text>
+      ${['<utilisateur>','  <id>1</id>','  <nom>Alice</nom>','  <age>28</age>','</utilisateur>'].map((l,i)=>`
+        <text x="22" y="${50+i*20}" style="font-size:10px;fill:${l.includes('</')&&!l.includes('>')?'#085041':l.startsWith('<')?'#0F6E56':'#04342C'};font-family:monospace;">${l.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</text>
+      `).join('')}
+      <text x="320" y="155" text-anchor="middle" style="font-size:10px;fill:#0F6E56;">XML : ~120 octets vs JSON : ~40 octets pour la même donnée</text>
+    </svg>`
+  },
+  yaml: {
+    title:'YAML — Yet Another Markup Language',
+    desc:'Format texte lisible par l\'humain, basé sur l\'indentation. Standard de facto pour les configurations (Kubernetes, Docker Compose, CI/CD). Superset de JSON.',
+    pros:'Très lisible · Commentaires supportés · Kubernetes/Ansible natif',
+    cons:'Indentation sensible aux espaces · Parsing ambigu · Sécurité (YAML bombs)',
+    svg:`<svg width="100%" viewBox="0 0 640 180">
+      <rect x="10" y="10" width="620" height="160" rx="8" fill="#E1F5EE" stroke="#085041" stroke-width="1"/>
+      <text x="320" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#04342C;">Exemple YAML (Kubernetes Pod)</text>
+      ${['apiVersion: v1','kind: Pod','metadata:','  name: mon-app','  labels:','    app: web','spec:','  containers:','  - name: nginx','    image: nginx:1.25'].map((l,i)=>`
+        <text x="22" y="${48+i*14}" style="font-size:10px;fill:${l.startsWith(' ')?'#085041':'#04342C'};font-family:monospace;">${l}</text>
+      `).join('')}
+    </svg>`
+  },
+  text: {
+    title:'Texte brut & Logs — le format universel',
+    desc:'Fichiers texte non structurés. Les logs applicatifs sont la source de données non structurées la plus abondante. Nécessite un parsing (regex, logstash, fluentd) pour être exploitable.',
+    pros:'Universel · Pas de dépendance · Lisible directement',
+    cons:'Pas de typage · Requiert du parsing · Difficile à indexer nativement',
+    svg:`<svg width="100%" viewBox="0 0 640 180">
+      <rect x="10" y="10" width="620" height="160" rx="8" fill="#FAECE7" stroke="#D85A30" stroke-width="1"/>
+      <text x="320" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#4A1B0C;">Exemple log applicatif</text>
+      ${['2024-01-10 10:23:41 INFO  Request GET /api/users 200 45ms','2024-01-10 10:23:42 WARN  DB connection pool 80% full','2024-01-10 10:23:43 ERROR NullPointerException at UserService:142','2024-01-10 10:23:44 INFO  Request POST /api/login 401 12ms'].map((l,i)=>`
+        <rect x="14" y="${44+i*28}" width="612" height="22" rx="3" fill="${l.includes('ERROR')?'#F5C4B3':l.includes('WARN')?'#FAC775':'#FAECE7'}" stroke="#D85A30" stroke-width=".3"/>
+        <text x="20" y="${58+i*28}" style="font-size:9px;fill:#4A1B0C;font-family:monospace;">${l}</text>
+      `).join('')}
+    </svg>`
+  },
+  media: {
+    title:'Images, Vidéo & Audio — données non structurées',
+    desc:'80% des données mondiales sont non structurées. Images (JPEG, PNG, TIFF), vidéos (MP4, MKV), audio (WAV, MP3). Stockés en object storage (S3, GCS). Le traitement nécessite du ML (CNN, transformers).',
+    pros:'Richesse informationnelle · Source IA/ML · Volume immense',
+    cons:'Stockage coûteux · Nécessite ML pour exploiter · Métadonnées critiques',
+    svg:`<svg width="100%" viewBox="0 0 640 180">
+      <rect x="10" y="10" width="620" height="160" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="1"/>
+      <text x="320" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#4A1B0C;">Pipeline traitement image</text>
+      ${[['S3 Bucket','#F0997B','Image brute'],['Preprocessing','#D85A30','Resize, normalize'],['CNN Model','#993C1D','Feature extraction'],['Résultat','#712B13','Label + score']].map(([label,color,sub],i)=>`
+        <rect x="${30+i*148}" y="55" width="120" height="50" rx="8" fill="${color}"/>
+        <text x="${90+i*148}" y="76" text-anchor="middle" dominant-baseline="central" style="font-size:11px;font-weight:500;fill:#FAECE7;">${label}</text>
+        <text x="${90+i*148}" y="94" text-anchor="middle" dominant-baseline="central" style="font-size:9px;fill:#F5C4B3;">${sub}</text>
+        ${i<3?`<text x="${158+i*148}" y="80" text-anchor="middle" style="font-size:16px;fill:#FAECE7;">→</text>`:''}
+      `).join('')}
+    </svg>`
+  },
+  parquet: {
+    title:'Apache Parquet — stockage colonnaire',
+    desc:'Format binaire colonnaire développé par Cloudera/Twitter. Révolutionnaire pour l\'analytique : lire seulement les colonnes nécessaires. Compression par colonne (Snappy, GZIP, ZSTD). Standard de facto Hadoop/Spark.',
+    pros:'Lecture sélective des colonnes · Compression excellente · Predicate pushdown',
+    cons:'Pas lisible textuellement · Écriture plus lente · Mauvais pour les updates',
+    svg:`<svg width="100%" viewBox="0 0 640 190">
+      <defs><marker id="arr4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="10" y="10" width="260" height="170" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="1"/>
+      <text x="140" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#412402;">SQL = stockage par lignes</text>
+      ${['Alice | 28 | Paris | 45k','Bob   | 35 | Lyon  | 52k','Carol | 22 | Nice  | 38k'].map((r,i)=>`
+        <rect x="22" y="${40+i*38}" width="236" height="30" rx="4" fill="${['#FAC775','#EF9F27','#BA7517'][i]}" opacity=".7"/>
+        <text x="140" y="${55+i*38}" text-anchor="middle" dominant-baseline="central" style="font-size:10px;fill:#412402;font-family:monospace;">${r}</text>
+      `).join('')}
+      <text x="140" y="168" text-anchor="middle" style="font-size:10px;fill:#854F0B;">Lire "age" → lire 3 lignes entières</text>
+      <line x1="275" y1="100" x2="318" y2="100" stroke="#BA7517" stroke-width="1.5" marker-end="url(#arr4)"/>
+      <rect x="325" y="10" width="300" height="180" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="1"/>
+      <text x="475" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#412402;">Parquet = stockage par colonnes</text>
+      ${[['nom','#FAC775','Alice Bob Carol'],['age','#EF9F27','28  35  22'],['ville','#BA7517','Paris Lyon Nice'],['sal.','#854F0B','45k  52k 38k']].map(([col,fill,vals],i)=>`
+        <rect x="337" y="${44+i*32}" width="70" height="24" rx="4" fill="${fill}"/>
+        <text x="372" y="${56+i*32}" text-anchor="middle" dominant-baseline="central" style="font-size:10px;font-weight:500;fill:#412402;">${col}</text>
+        <rect x="415" y="${44+i*32}" width="195" height="24" rx="4" fill="${fill}" opacity=".45"/>
+        <text x="512" y="${56+i*32}" text-anchor="middle" dominant-baseline="central" style="font-size:10px;fill:#412402;font-family:monospace;">${vals}</text>
+      `).join('')}
+      <rect x="337" y="46" width="70" height="24" rx="4" fill="none" stroke="#D85A30" stroke-width="2"/>
+      <rect x="337" y="78" width="70" height="24" rx="4" fill="none" stroke="#D85A30" stroke-width="2" class="scan-anim"/>
+      <text x="475" y="175" text-anchor="middle" style="font-size:10px;fill:#854F0B;">Lire "age" → 1 seule colonne lue</text>
+    </svg>`
+  },
+  avro: {
+    title:'Apache Avro — sérialisation avec schéma',
+    desc:'Format binaire Row-based avec schéma JSON embarqué. Idéal pour les streams (Kafka). Le schéma est auto-documenté et versionné — la compatibilité est gérée automatiquement.',
+    pros:'Schéma embarqué · Kafka natif · Évolution de schéma · Compact',
+    cons:'Non lisible textuellement · Moins performant que Parquet pour les analyses',
+    svg:`<svg width="100%" viewBox="0 0 640 190">
+      <defs><marker id="arr4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="10" y="10" width="290" height="170" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="1"/>
+      <text x="155" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#412402;">Schéma Avro (JSON)</text>
+      ${['{"type":"record",','  "name":"Utilisateur",','  "fields":[','    {"name":"id","type":"int"},','    {"name":"nom","type":"string"},','    {"name":"age","type":"int"}','  ]','}'].map((l,i)=>`
+        <text x="22" y="${46+i*16}" style="font-size:10px;fill:${l.includes('name')?'#633806':l.includes('type')?'#854F0B':'#412402'};font-family:monospace;">${l}</text>
+      `).join('')}
+      <rect x="320" y="10" width="310" height="170" rx="8" fill="#F1EFE8" stroke="#B4B2A9" stroke-width=".5"/>
+      <text x="475" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#2C2C2A;">Avro dans l'écosystème</text>
+      <rect x="334" y="45" width="140" height="30" rx="6" fill="#FAEEDA" stroke="#BA7517" stroke-width="1"/>
+      <text x="404" y="60" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:#412402;">Producer Kafka</text>
+      <line x1="474" y1="60" x2="510" y2="60" stroke="#BA7517" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr4)"/>
+      <rect x="515" y="45" width="100" height="30" rx="6" fill="#EF9F27" stroke="#BA7517" stroke-width="1"/>
+      <text x="565" y="60" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:#412402;">Topic</text>
+      <rect x="440" y="100" width="120" height="30" rx="6" fill="#FAEEDA" stroke="#BA7517" stroke-width="1"/>
+      <text x="500" y="115" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:#412402;">Consumer Spark</text>
+      <path d="M565 75 L565 90 L500 90 L500 100" fill="none" stroke="#BA7517" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr4)"/>
+      <text x="475" y="150" text-anchor="middle" style="font-size:11px;fill:#2C2C2A;">Schema Registry</text>
+      <text x="475" y="166" text-anchor="middle" style="font-size:10px;fill:#854F0B;">Gère l'évolution des schémas</text>
+    </svg>`
+  },
+  orc: {
+    title:'ORC — Optimized Row Columnar',
+    desc:'Format colonnaire développé pour Hive/Hadoop. Compression encore meilleure que Parquet dans certains cas. Support natif des types complexes (struct, array, map). Index intégrés.',
+    pros:'Compression maximale · Index intégrés · Hive natif · Predicate pushdown',
+    cons:'Moins universel que Parquet · Surtout écosystème Hadoop',
+    svg:`<svg width="100%" viewBox="0 0 640 180">
+      <rect x="10" y="10" width="620" height="160" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"/>
+      <text x="320" y="30" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#412402;">Comparaison compression — même dataset 10 Go</text>
+      <line x1="20" y1="38" x2="620" y2="38" stroke="#EF9F27" stroke-width=".5"/>
+      ${[['CSV (texte brut)','10.0 Go','#F0997B',600],['JSON','12.0 Go','#F5C4B3',640],['Parquet','1.2 Go','#EF9F27',72],['ORC','0.9 Go','#BA7517',54],['Avro','3.5 Go','#FAC775',210]].map(([label,size,color,w],i)=>`
+        <text x="22" y="${60+i*24}" style="font-size:11px;fill:#412402;">${label}</text>
+        <rect x="160" y="${48+i*24}" width="${w}" height="16" rx="3" fill="${color}"/>
+        <text x="${164+w}" y="${60+i*24}" style="font-size:11px;fill:#633806;">  ${size}</text>
+      `).join('')}
+    </svg>`
+  }
+};
+
+let currentCat = 'struct';
+let currentFmt = 'csv';
+
+function showCat(cat) {
+  currentCat = cat;
+  ['struct','semi','nonst','colum'].forEach(k => {
+    const t = document.getElementById('cat-'+k);
+    const c = cats[k];
+    if(k===cat) {
+      t.style.background = c.bg;
+      t.style.border = `2px solid ${c.color}`;
+      t.querySelector('div').style.color = c.txt;
+      t.querySelectorAll('div')[1].style.color = c.sub;
+    } else {
+      t.style.background = '#F1EFE8';
+      t.style.border = '1.5px solid #B4B2A9';
+      t.querySelector('div').style.color = '#2C2C2A';
+      t.querySelectorAll('div')[1].style.color = '#5F5E5A';
+    }
+  });
+  const fmts = cats[cat].formats;
+  const box = document.getElementById('fmt-formats');
+  box.innerHTML = fmts.map(f=>`
+    <div onclick="showFmt('${f.id}')" id="fmtbtn-${f.id}" style="cursor:pointer;padding:6px 12px;border-radius:8px;background:${f.bg};border:1.5px solid ${f.color};font-size:12px;font-weight:500;color:${f.txt};transition:all .15s;">
+      ${f.label}
+    </div>
+  `).join('');
+  showFmt(fmts[0].id);
+}
+
+function showFmt(id) {
+  currentFmt = id;
+  const cat = cats[currentCat];
+  cat.formats.forEach(f => {
+    const b = document.getElementById('fmtbtn-'+f.id);
+    if(!b) return;
+    if(f.id===id) { b.style.borderWidth='2.5px'; b.style.opacity='1'; }
+    else { b.style.borderWidth='1.5px'; b.style.opacity='.65'; }
+  });
+  const d = fmtData[id];
+  if(!d) return;
+  const el = document.getElementById('fmt-display');
+  el.innerHTML = `<div class="anim-in2" style="border-radius:12px;border:1.5px solid ${cat.color};background:${cat.bg};overflow:hidden;">
+    <div style="padding:12px 16px 6px;">
+      <div style="font-size:14px;font-weight:500;color:${cat.txt};">${d.title}</div>
+      <div style="font-size:12px;color:${cat.sub};margin-top:3px;line-height:1.5;">${d.desc}</div>
+    </div>
+    <div style="padding:0 8px;">${d.svg}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px 16px 12px;">
+      <div style="font-size:11px;color:${cat.txt};opacity:.85;"><strong style="color:${cat.color};">Avantages :</strong> ${d.pros}</div>
+      <div style="font-size:11px;color:${cat.txt};opacity:.85;"><strong style="color:${cat.color};">Limites :</strong> ${d.cons}</div>
+    </div>
+  </div>`;
+}
+
+showCat('struct');
 </script>
 </body>
 </html>
